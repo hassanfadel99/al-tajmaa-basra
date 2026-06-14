@@ -1302,3 +1302,39 @@ function executePdfDownload() {
         showNotification("حدث خطأ أثناء التصدير ⚠️");
     });
 }
+// -------------------------------------------------------------------
+// نظام التثبيت الذكي للتطبيق (PWA Manual Install)
+// -------------------------------------------------------------------
+let deferredPrompt;
+const installAppBtn = document.getElementById('installAppBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // منع ظهور النافذة التلقائية المزعجة
+    e.preventDefault();
+    // حفظ الحدث لاستخدامه عند الضغط على الزر
+    deferredPrompt = e;
+    // إظهار زر التثبيت في لوحة التحكم
+    if (installAppBtn) installAppBtn.classList.remove('hidden');
+});
+
+if (installAppBtn) {
+    installAppBtn.addEventListener('click', async () => {
+        if (deferredPrompt !== null) {
+            // إظهار نافذة التثبيت الرسمية من الهاتف
+            deferredPrompt.prompt();
+            // انتظار رد المستخدم
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                console.log('تم قبول التثبيت');
+                installAppBtn.classList.add('hidden'); // إخفاء الزر بعد التثبيت
+            }
+            deferredPrompt = null;
+        }
+    });
+}
+
+// إخفاء الزر نهائياً إذا كان التطبيق مثبتاً بالفعل
+window.addEventListener('appinstalled', () => {
+    if (installAppBtn) installAppBtn.classList.add('hidden');
+    showNotification("تم تثبيت التطبيق بنجاح! 🎉");
+});
