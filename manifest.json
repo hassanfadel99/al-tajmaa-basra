@@ -1,0 +1,15 @@
+{
+  "name": "تجمع شباب الشريعة",
+  "short_name": "الشباب",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#16120e",
+  "theme_color": "#2c1a04",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/N2BJ7Srb/N2BJ7Srb.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
