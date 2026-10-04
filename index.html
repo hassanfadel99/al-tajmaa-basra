@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <!-- السر هنا: إجبار جميع الأجهزة على عرض 1200 بكسل وتصغيره ليناسب الشاشة -->
+    <meta name="viewport" content="width=1200">
+    <title>تجمع شباب الشريعة - مديرية البصرة | البوابة الإلكترونية</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- مكتبة Swiper لشريط التقليب -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.2.0/swiper-bundle.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111814">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body class="light-mode">
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="loginScreen" class="auth-container">
+        <div class="panel-card auth-card saji-border">
+            <div class="auth-image-side"></div>
+            <div class="auth-form-side">
+                <h2 class="primary-title text-center" style="font-size: 1.6rem;">بوابة الإدارة المركزية<br><span style="font-size: 1.1rem; color: var(--text-muted);">تجمع شباب الشريعة - البصرة</span></h2>
+                <div class="auth-form mt-20">
+                    <div class="form-group mb-15">
+                        <input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off" class="panel-input">
+                    </div>
+                    <div class="form-group mb-15">
+                        <input type="password" id="password" placeholder="رمز الدخول" class="panel-input">
+                    </div>
+                    <button class="panel-btn saji-btn mt-10 full-width" style="font-size: 1.1rem; padding: 15px;" onclick="handleMainLogin()">تسجيل الدخول</button>
+                    <p id="loginError" class="error-msg hidden text-center mt-15">⚠️ معلومات الدخول غير صحيحة!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم الرئيسية -->
+    <div id="dashboardScreen" class="screen hidden">
+        <!-- شريط التنقل العلوي (Desktop Navbar) -->
+        <header class="app-header panel-card desktop-navbar saji-border">
+            <div class="nav-brand" style="display:flex; align-items:center; gap:15px;">
+                <img src="https://i.ibb.co/N2BJ7Srb/N2BJ7Srb.jpg" alt="Logo" style="width:45px; height:45px; border-radius:10px; border: 1px solid var(--saji-main);">
+                <h2 class="primary-title" style="font-size: 1.3rem; margin:0;">تجمع شباب الشريعة</h2>
+            </div>
+            
+            <div class="desktop-nav-links">
+                <button class="nav-link-btn" onclick="openDirectCodeModal()">المعلومات الشخصية</button>
+                <button class="nav-link-btn" onclick="openAdminPasswordModal()">الإدارة المركزية</button>
+                <button class="nav-link-btn" onclick="navigateTo('activitiesScreen')">الاستمارات</button>
+                <button class="nav-link-btn" onclick="navigateTo('socialScreen')">الصفحات الرسمية</button>
+                <button class="nav-link-btn" onclick="openSidebarSection('about')">حول النظام</button>
+            </div>
+
+            <div class="nav-actions">
+                <label class="theme-switch" title="الوضع الليلي/النهاري">
+                    <input type="checkbox" id="themeCheckbox" onchange="toggleSystemTheme()">
+                    <span class="slider round">
+                        <span class="icon-sun">☀️</span>
+                        <span class="icon-moon">🌙</span>
+                    </span>
+                </label>
+                <button onclick="handleLogout()" class="logout-top-btn desktop-only">خروج ↪</button>
+            </div>
+        </header>
+
+        <div style="padding: 0 10px;">
+            <button id="installAppBtn" class="panel-btn saji-btn hidden full-width mt-15" style="border-radius: 12px; font-size: 1.1rem;">
+                📲 تثبيت النظام على الجهاز
+            </button>
+        </div>
+
+        <!-- لافتة المساعد الذكي (Hero Banner) -->
+        <div class="hero-ai-banner mt-20 panel-card saji-border" onclick="openChatModal()">
+            <div class="hero-ai-content">
+                <span class="hero-ai-icon">🤖</span>
+                <div class="hero-ai-text">
+                    <h3>المساعد الذكي للإدارة المركزية ✨</h3>
+                    <p>يمكنني مساعدتك في كتابة خطط البرامج، كليشات الشهادات، وتحليل البيانات بضغطة زر.</p>
+                </div>
+            </div>
+            <button class="panel-btn saji-btn ai-action-btn">ابدأ المحادثة الآن ➤</button>
+        </div>
+
+        <!-- شبكة الخدمات السريعة -->
+        <div class="square-panel-grid mt-20">
+            <button class="panel-card square-btn saji-hover-card" onclick="openDirectCodeModal()">
+                <div class="card-icon">👤</div>
+                <div>
+                    <h3>بوابة الكادر</h3>
+                    <p class="service-desc">استعرض معلوماتك الشخصية وملفك</p>
+                </div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="openAdminPasswordModal()">
+                <div class="card-icon">💼</div>
+                <div>
+                    <h3>الإدارة المركزية</h3>
+                    <p class="service-desc">سجلات الحضور، الإحصائيات، والأعضاء</p>
+                </div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateTo('activitiesScreen')">
+                <div class="card-icon">📝</div>
+                <div>
+                    <h3>الاستمارات</h3>
+                    <p class="service-desc">الأنشطة، التخطيط، والكشافة</p>
+                </div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateTo('socialScreen')">
+                <div class="card-icon">🌐</div>
+                <div>
+                    <h3>المنصات الإعلامية</h3>
+                    <p class="service-desc">روابط الصفحات الرسمية وحساباتها</p>
+                </div>
+            </button>
+        </div>
+
+        <!-- مساحة المنشورات الديناميكية (فيسبوك) -->
+        <div class="panel-card saji-border mt-20" id="facebookSliderContainer" style="padding: 25px; display: none;">
+            <h3 class="primary-title text-center mb-15" style="font-size: 1.4rem;">آخر النشاطات والأخبار</h3>
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper" id="fbWrapper"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الشاشات الفرعية -->
+    <div id="aboutView" class="screen hidden">
+        <div class="view-header panel-card saji-border">
+            <h3 class="primary-title">حول النظام</h3>
+            <button class="panel-btn mini-btn" onclick="returnToDashboardFromSidebar('aboutView')">↩ العودة</button>
+        </div>
+        <div class="panel-card content-card saji-border mt-20 text-center p-15">
+            <div class="inset-pill text-center" style="display: block; line-height: 1.8; font-size: 1.1rem;">
+                موقع مؤسسي خاص بأعضاء وإدارة تجمع شباب الشريعة - مديرية البصرة<br><br>
+                <span style="color: var(--error); font-weight: bold; background: rgba(231,76,60,0.1); padding: 5px 10px; border-radius: 8px;">يمنع منعاً باتاً تداول رابط الموقع، وهناك أداة مراقبة أمنية لحماية البيانات.</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border">
+            <h3 class="primary-title">بوابة الإدارة المركزية</h3>
+            <button class="panel-btn mini-btn" onclick="goBackToDashboard()">↩ العودة</button>
+        </div>
+        <div class="square-panel-grid mt-20">
+            <button class="panel-card square-btn saji-hover-card" onclick="openAdminKaderView()">
+                <div class="card-icon">👥</div>
+                <div>
+                    <h3>سجل الكادر</h3>
+                    <p class="service-desc">معلومات الأعضاء المباشرة</p>
+                </div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateToAttendanceLogs()">
+                <div class="card-icon">📅</div>
+                <div>
+                    <h3>سجل الحضور</h3>
+                    <p class="service-desc">المتابعة اليومية والشهرية</p>
+                </div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateToFormsArchive()">
+                <div class="card-icon">📁</div>
+                <div>
+                    <h3>أرشيف الاستمارات</h3>
+                    <p class="service-desc">توثيق الأنشطة المركزية</p>
+                </div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateToPlanningArchive()">
+                <div class="card-icon">📈</div>
+                <div>
+                    <h3>قسم التخطيط</h3>
+                    <p class="service-desc">البرامج والخطط الاستراتيجية</p>
+                </div>
+            </button>
+        </div>
+        <div class="mt-20">
+            <button class="panel-btn saji-btn full-width" style="font-size: 1.2rem; padding: 15px;" onclick="openChartsScreen()">📊 لوحة الإحصائيات والرسوم البيانية الشاملة</button>
+        </div>
+    </div>
+
+    <div id="chartsScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border">
+            <h3 class="primary-title">الرسوم البيانية للإدارة</h3>
+            <button class="panel-btn mini-btn" onclick="goBackToAdminFromCharts()">↩ العودة</button>
+        </div>
+        <div class="charts-grid mt-20">
+            <div class="panel-card saji-border p-15">
+                <h4 class="text-center mb-15 gold-text">📊 الحالة الاجتماعية</h4>
+                <div style="position: relative; margin: auto; height: 240px; width: 240px;">
+                    <canvas id="maritalChart"></canvas>
+                </div>
+            </div>
+            <div class="panel-card saji-border p-15">
+                <h4 class="text-center mb-15 gold-text">📈 الفئات العمرية</h4>
+                <div class="inset-pill mb-15">
+                    <span class="label">متوسط الأعمار:</span>
+                    <span class="value" id="averageAgeVal" style="color:var(--text-main); font-weight:bold;">0 سنة</span>
+                </div>
+                <div style="position: relative; width: 100%; height: 220px;">
+                    <canvas id="ageChart"></canvas>
+                </div>
+            </div>
+            <div class="panel-card saji-border p-15">
+                <h4 class="text-center mb-15 gold-text">🛡️ السجل الانضباطي</h4>
+                <div style="position: relative; width: 100%; height: 220px;">
+                    <canvas id="punishmentChart"></canvas>
+                </div>
+            </div>
+            <div class="panel-card saji-border p-15">
+                <h4 class="text-center mb-15 gold-text">🏆 لوحة التميز (الشكر)</h4>
+                <div style="position: relative; width: 100%; height: 220px;">
+                    <canvas id="awardsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminKaderListScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border">
+            <h3 class="primary-title">سجل أعضاء المديرية</h3>
+            <button class="panel-btn mini-btn" onclick="goBackToAdminScreen()">↩ العودة</button>
+        </div>
+        <div class="names-square-grid" id="adminAliasesContainer"></div>
+    </div>
+
+    <!-- ملف العضو -->
+    <div id="profileDetailScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border mb-20">
+            <h3 class="primary-title">الملف الشخصي للعضو</h3>
+            <button class="panel-btn mini-btn" id="profileBackBtn" onclick="closeProfileScreen()">العودة ↩</button>
+        </div>
+        <div class="profile-layout">
+            <div class="profile-sidebar panel-card saji-border p-15 text-center">
+                <div class="profile-avatar-frame saji-border">
+                    <img id="profileImage" src="" alt="صورة العضو" onerror="handleImageError(this)">
+                    <div class="avatar-fallback hidden">لا توجد صورة</div>
+                </div>
+                <h2 id="profileFullName" class="gold-text profile-name mb-15">الاسم الكامل</h2>
+                <a id="driveLinkBtn" href="#" target="_blank" class="panel-btn saji-btn full-width block-link text-center mb-15">📁 المستمسكات والصور</a>
+                <div class="profile-actions-grid">
+                    <button class="pill-action-btn copy-btn" onclick="copyMemberInfo()">📋 نسخ البيانات</button>
+                    <button class="pill-action-btn pdf-btn" onclick="openPdfPreview()">📄 تحميل PDF</button>
+                </div>
+            </div>
+            
+            <div class="profile-main panel-card saji-border p-15">
+                <h3 class="gold-text mb-15 border-bottom-subtle">المعلومات الأساسية</h3>
+                <div id="primaryDetailsContainer" class="basic-info-grid mb-20"></div>
+                
+                <h3 class="gold-text mb-15 border-bottom-subtle mt-20">السجلات التفصيلية</h3>
+                <div class="modern-tabs-grid">
+                    <button class="panel-tab-btn" onclick="loadSpecificDetail('skills', this)">المهارات</button>
+                    <button class="panel-tab-btn" onclick="loadSpecificDetail('housing', this)">السكن</button>
+                    <button class="panel-tab-btn" onclick="loadSpecificDetail('work', this)">العمل</button>
+                    <button class="panel-tab-btn" onclick="loadSpecificDetail('punishments', this)">العقوبات</button>
+                    <button class="panel-tab-btn" onclick="loadSpecificDetail('awards', this)">الشكر</button>
+                </div>
+                <div id="dynamicDetailDisplayBox" class="dynamic-detail-box hidden mt-15">
+                    <div class="panel-card p-15" style="background: rgba(0,0,0,0.1);">
+                        <h4 id="dynamicDetailTitle" class="primary-title text-center mb-15">عنوان القسم</h4>
+                        <div id="dynamicDetailContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- باقي الشاشات الأرشيفية -->
+    <div id="attendanceLogsScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border">
+            <h3 class="primary-title" id="attendanceScreenTitle">سجلات الحضور</h3>
+            <button class="panel-btn mini-btn" id="attendanceBackBtn" onclick="goBackToAdminFromLogs()">↩ العودة</button>
+        </div>
+        <div id="attendanceMonthsContainer" class="names-square-grid mt-20"></div>
+        <div id="attendanceDaysContainer" class="hidden mt-20"></div>
+    </div>
+
+    <div id="formsCategoryScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border">
+            <h3 class="primary-title">أرشيف الأنشطة</h3>
+            <button class="panel-btn mini-btn" onclick="goBackToAdminFromForms()">↩ العودة</button>
+        </div>
+        <div class="square-panel-grid mt-20">
+            <button class="panel-card square-btn saji-hover-card" onclick="loadFormsFolders('tajammu')">
+                <div class="card-icon">📂</div>
+                <div><h3>استمارات التجمع</h3></div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="loadFormsFolders('scouts')">
+                <div class="card-icon">⛺</div>
+                <div><h3>استمارات الكشافة</h3></div>
+            </button>
+        </div>
+    </div>
+
+    <div id="formsMonthsScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border">
+            <h3 class="primary-title" id="formsMonthsTitle">مجلدات الأشهر</h3>
+            <button class="panel-btn mini-btn" id="formsMonthsBackBtn" onclick="goBackToFormsCategory()">↩ العودة</button>
+        </div>
+        <div id="formsMonthsContainer" class="names-square-grid mt-20"></div>
+    </div>
+
+    <div id="formsListScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border">
+            <h3 class="primary-title" id="formsListTitle">الاستمارات</h3>
+            <button class="panel-btn mini-btn" onclick="goBackToFormsMonths()">↩ العودة</button>
+        </div>
+        <div id="monthActionContainer" class="mt-20 mb-10"></div>
+        <div id="formsCapsulesContainer" class="mt-10"></div>
+    </div>
+
+    <div id="activitiesScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border">
+            <h3 class="primary-title">بوابة الاستمارات الإلكترونية</h3>
+            <button class="panel-btn mini-btn" onclick="goBackToDashboard()">↩ العودة</button>
+        </div>
+        <div class="square-panel-grid mt-20">
+            <a href="https://forms.gle/b3XfKgFKtupbv2859" target="_blank" class="panel-card square-btn saji-hover-card block-link">
+                <div class="card-icon">📝</div>
+                <div><h3>استمارة التجمع</h3><p class="service-desc">تقديم نشاط مركزي</p></div>
+            </a>
+            <a href="https://forms.gle/jo95SqpFLAroFSzE8" target="_blank" class="panel-card square-btn saji-hover-card block-link">
+                <div class="card-icon">⛺</div>
+                <div><h3>استمارة الكشافة</h3><p class="service-desc">أنشطة المفوضية</p></div>
+            </a>
+            <a href="https://forms.gle/ANHiG15Scon53MaT6" target="_blank" class="panel-card square-btn saji-hover-card block-link" style="grid-column: 1 / -1;">
+                <div class="card-icon">📈</div>
+                <div><h3>استمارة التخطيط والبرامج</h3><p class="service-desc">رفع الخطط الشهرية</p></div>
+            </a>
+        </div>
+    </div>
+
+    <div id="socialScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border">
+            <h3 class="primary-title">الصفحات الرسمية</h3>
+            <button class="panel-btn mini-btn" onclick="goBackToDashboard()">↩ العودة</button>
+        </div>
+        <div class="square-panel-grid mt-20">
+            <button class="panel-card square-btn saji-hover-card" onclick="openSocialModal('tajammu')">
+                <div class="card-icon">🌐</div>
+                <div><h3>تجمع شباب الشريعة</h3></div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="openSocialModal('scouts')">
+                <div class="card-icon">⚜️️</div>
+                <div><h3>كشافة الإمام الحسين</h3></div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="openSocialModal('trend')" style="grid-column: 1 / -1;">
+                <div class="card-icon">📱</div>
+                <div><h3>منصة ترند الإعلامية</h3></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- النوافذ المنبثقة (Modals) -->
+    
+    <!-- نافذة تأكيد حذف الدردشة الجديدة الفخمة -->
+    <div id="customConfirmModal" class="modal-overlay hidden" style="z-index: 4000;">
+        <div class="panel-card modal-window saji-border text-center" style="height: auto; max-width: 350px;">
+            <div class="modal-lock-icon" style="color: var(--error);">⚠️</div>
+            <h3 class="primary-title">تأكيد الحذف</h3>
+            <p class="mt-10 mb-15" style="color: var(--text-muted);">هل أنت متأكد من مسح جميع الدردشات؟ لا يمكن التراجع عن هذا الإجراء.</p>
+            <div class="modal-actions mt-20">
+                <button class="panel-btn full-width" style="border-radius: 8px;" onclick="closeCustomConfirm()">إلغاء</button>
+                <button class="panel-btn saji-btn full-width" style="background: var(--error); border: none; border-radius: 8px; color: white;" onclick="executeClearChat()">نعم، امسح</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="progressOverlay" class="modal-overlay hidden" style="z-index: 9999; flex-direction: column;">
+        <div class="panel-card saji-border p-15" style="width: 90%; max-width: 400px; text-align: center;">
+            <h3 class="primary-title mb-15" id="progressTitle">جاري التصدير...</h3>
+            <div style="background: rgba(0,0,0,0.1); border-radius: 12px; height: 25px; overflow: hidden; border: 1px solid var(--gold); position: relative;">
+                <div id="progressBarFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #b45309, #d4af37); transition: width 0.4s ease;"></div>
+            </div>
+            <div id="progressText" class="mt-10 gold-text">0%</div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">يرجى الانتظار وعدم إغلاق النافذة</p>
+        </div>
+    </div>
+
+    <div id="attendanceDetailModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window saji-border">
+            <h3 id="attendanceModalTitle" class="primary-title text-center mb-15">تفاصيل السجل</h3>
+            <div class="modal-scroll-area" id="attendanceModalTextContent" style="font-family: monospace; white-space: pre-wrap;"></div>
+            <div class="mt-15">
+                <a id="attendanceModalPdfBtn" href="#" target="_blank" class="panel-btn saji-btn full-width block-link text-center">📁 تحميل الملف الرسمي</a>
+            </div>
+            <div class="modal-actions mt-10">
+                <button class="panel-btn full-width" onclick="closeAttendanceDetailModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="formTextModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window saji-border">
+            <h3 id="formModalTitle" class="primary-title text-center mb-15">تفاصيل الاستمارة</h3>
+            <div class="modal-scroll-area" id="formModalTextContent"></div>
+            <div class="mt-15">
+                <button class="panel-btn saji-btn full-width" onclick="generateFormPDF()">📄 تحميل PDF</button>
+            </div>
+            <div class="modal-actions mt-10">
+                <button class="panel-btn full-width" onclick="closeFormTextModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="formPdfModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window pdf-modal-window saji-border">
+            <h3 class="primary-title text-center mb-15">معاينة للطباعة</h3>
+            <div id="formPdfContentArea" class="modal-scroll-area" style="background: #e0e0e0; display: flex; flex-direction: column; align-items: center; gap: 20px;"></div>
+            <div class="modal-actions mt-15">
+                <button class="panel-btn full-width" onclick="closeFormPdfModal()">رجوع</button>
+                <button class="panel-btn saji-btn full-width" onclick="executeFormPdfDownload()">تنزيل النهائي</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdfPreviewModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window pdf-modal-window saji-border">
+            <h3 class="primary-title text-center mb-15">معاينة الملف الشخصي</h3>
+            <div id="pdfContentArea" class="modal-scroll-area" style="background: #e0e0e0; display: flex; flex-direction: column; align-items: center; gap: 20px;"></div>
+            <div class="modal-actions mt-15">
+                <button class="panel-btn full-width" onclick="closePdfPreview()">إلغاء</button>
+                <button class="panel-btn saji-btn full-width" onclick="executePdfDownload()">تنزيل PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="directCodeModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window saji-border text-center" style="height: auto;">
+            <div class="modal-lock-icon">🔐</div>
+            <h3 class="primary-title">بوابة العضو السري</h3>
+            <p class="mt-10 mb-15" style="color: var(--text-muted);">أدخل الرمز السري للوصول لملفك</p>
+            <div class="modal-form">
+                <input type="password" id="directMemberCodeInput" placeholder="الرمز السري" autocomplete="off" class="panel-input">
+            </div>
+            <p id="directModalCodeError" class="error-msg hidden">⚠️ الرمز غير صحيح!</p>
+            <div class="modal-actions mt-20">
+                <button class="panel-btn full-width" onclick="closeDirectCodeModal()">إلغاء</button>
+                <button class="panel-btn saji-btn full-width" onclick="submitDirectCode()">دخول</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminPasswordModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window saji-border text-center" style="height: auto;">
+            <div class="modal-lock-icon">💼</div>
+            <h3 class="primary-title">صلاحيات الإدارة</h3>
+            <p class="mt-10 mb-15" style="color: var(--text-muted);">الرمز الإداري الموحد</p>
+            <div class="modal-form">
+                <input type="password" id="adminPasswordInput" placeholder="الرمز الإداري" class="panel-input">
+            </div>
+            <p id="modalAdminError" class="error-msg hidden">⚠️ الرمز غير صحيح!</p>
+            <div class="modal-actions mt-20">
+                <button class="panel-btn full-width" onclick="closeAdminPasswordModal()">إلغاء</button>
+                <button class="panel-btn saji-btn full-width" onclick="submitAdminPassword()">دخول</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="socialLinksModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window saji-border" style="height: auto;">
+            <h3 id="socialModalTitle" class="primary-title text-center mb-15">اختر المنصة</h3>
+            <div id="socialLinksContainer" class="names-square-grid mt-10" style="grid-template-columns: 1fr; gap: 10px; margin: 0;"></div>
+            <div class="modal-actions mt-20">
+                <button class="panel-btn full-width" onclick="closeSocialModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة المساعد الذكي بأزرار ملونة ومرتبة -->
+    <div id="aiChatModal" class="modal-overlay hidden" style="z-index: 3000;">
+        <div class="panel-card modal-window saji-border" style="height: 85vh; max-height: 800px; max-width: 600px; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+            
+            <div class="modal-header" style="padding: 15px 20px; background: var(--panel-bg); border-bottom: 1px solid var(--panel-border-top); display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="primary-title" style="margin: 0; font-size: 1.2rem;">🤖 المساعد الذكي</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="pill-action-btn" style="background: rgba(231, 76, 60, 0.1); color: var(--error); border: 1px solid var(--error); padding: 6px 15px; font-size: 0.9rem; border-radius: 8px;" onclick="openCustomConfirm()">🗑️ مسح</button>
+                    <button class="pill-action-btn" style="background: rgba(212, 175, 55, 0.1); color: var(--gold); border: 1px solid var(--gold); padding: 6px 15px; font-size: 0.9rem; border-radius: 8px;" onclick="closeChatModal()">❌ إغلاق</button>
+                </div>
+            </div>
+            
+            <div id="chatMessagesArea" class="modal-scroll-area" style="flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; margin: 0; border-radius: 0;">
+                <div class="chat-msg ai-msg">
+                    <div class="msg-avatar">🤖</div>
+                    <div class="msg-bubble">
+                        <strong class="gold-text">أهلاً وسهلاً بك في مساعد تجمع شباب الشريعة ✨</strong><br><br>
+                        يمكنني صياغة التقارير، تحليل البيانات، وكتابة خطط البرامج الإدارية باحترافية.<br><br>
+                        <em>تفضل، كيف يمكنني مساعدتك اليوم؟</em>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-area" style="padding: 15px 20px; background: var(--panel-bg); border-top: 1px solid var(--panel-border-top); display: flex; gap: 10px; align-items: flex-end;">
+                <textarea id="aiChatInput" placeholder="اكتب طلبك الإداري هنا..." class="panel-input" style="flex: 1; resize: none; height: 50px; padding: 12px; border-radius: 10px;" onkeydown="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); sendChatMessage(); }"></textarea>
+                <button class="saji-btn" style="border-radius: 10px; width: 50px; height: 50px; font-size: 1.5rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="sendChatMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مكتبات خارجية وربط الأكواد -->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ar_AR/sdk.js#xfbml=1&version=v18.0"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.2.0/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <div id="toastNotification" class="toast hidden"></div>
+    
+    <!-- تم ربط السكريبت -->
+    <script src="script.js?v=6"></script>
+</body>
+</html>
