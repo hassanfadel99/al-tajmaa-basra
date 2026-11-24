@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تجمع شباب الشريعة - مديرية البصرة | البوابة الإلكترونية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.2.0/swiper-bundle.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0B132B">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body class="light-mode">
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="loginScreen" class="auth-container">
+        <div class="panel-card auth-card saji-border">
+            <div class="auth-image-side"></div>
+            <div class="auth-form-side">
+                <h2 class="primary-title text-center" style="font-size: 1.4rem;">بوابة الإدارة المركزية<br><span style="font-size: 1rem; color: var(--text-muted);">تجمع شباب الشريعة - مديرية البصرة</span></h2>
+                <div class="auth-form mt-20">
+                    <div class="form-group mb-15"><input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off" class="panel-input"></div>
+                    <div class="form-group mb-15"><input type="password" id="password" placeholder="رمز الدخول" class="panel-input"></div>
+                    <button class="panel-btn saji-btn mt-10 full-width" style="font-size: 1rem; padding: 12px;" onclick="handleMainLogin()">تسجيل الدخول</button>
+                    <p id="loginError" class="error-msg hidden text-center mt-15">⚠️ معلومات الدخول غير صحيحة!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- القائمة الجانبية المنسدلة (تظهر فقط في الهاتف) -->
+    <div id="sidebarPanel" class="sidebar-overlay hidden">
+        <div class="sidebar-content panel-card">
+            <button class="close-sidebar-btn" onclick="toggleSidebar(false)">&times; إغلاق القائمة</button>
+            <div class="sidebar-menu-items mt-20">
+                <div class="sidebar-item-header" style="color: var(--gold); font-weight: bold; margin-bottom: 10px;">خيارات النظام</div>
+                <button class="panel-list-btn" onclick="openDirectCodeModal()">👤 المعلومات الشخصية</button>
+                <button class="panel-list-btn" onclick="openAdminPasswordModal()">💼 الإدارة المركزية</button>
+                <button class="panel-list-btn" onclick="navigateTo('activitiesScreen')">📝 الاستمارات</button>
+                <button class="panel-list-btn" onclick="navigateTo('socialScreen')">🌐 الصفحات الرسمية</button>
+                <button class="panel-list-btn" onclick="openSidebarSection('about')">ℹ️ حول النظام</button>
+                <button class="panel-list-btn" style="color: var(--error);" onclick="handleLogout()">↪ تسجيل الخروج</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم الرئيسية -->
+    <div id="dashboardScreen" class="screen hidden">
+        <header class="app-header panel-card desktop-navbar saji-border">
+            <div class="nav-brand" style="display:flex; align-items:center; gap:15px;">
+                <img src="https://i.ibb.co/N2BJ7Srb/N2BJ7Srb.jpg" alt="Logo" style="width:40px; height:40px; border-radius:8px; border: 1px solid var(--saji-main);">
+                <h2 class="primary-title" style="font-size: 1.1rem; margin:0;">تجمع شباب الشريعة</h2>
+            </div>
+            <div class="desktop-nav-links">
+                <button class="nav-link-btn" onclick="openDirectCodeModal()">المعلومات الشخصية</button>
+                <button class="nav-link-btn" onclick="openAdminPasswordModal()">الإدارة المركزية</button>
+                <button class="nav-link-btn" onclick="navigateTo('activitiesScreen')">الاستمارات</button>
+                <button class="nav-link-btn" onclick="navigateTo('socialScreen')">الصفحات الرسمية</button>
+                <button class="nav-link-btn" onclick="openSidebarSection('about')">حول النظام</button>
+            </div>
+            <div class="nav-actions">
+                <label class="theme-switch" title="الوضع الليلي/النهاري">
+                    <input type="checkbox" id="themeCheckbox" onchange="toggleSystemTheme()">
+                    <span class="slider round"><span class="icon-sun">☀️</span><span class="icon-moon">🌙</span></span>
+                </label>
+                <button onclick="handleLogout()" class="logout-top-btn desktop-only">خروج ↪</button>
+                <button class="panel-btn mini-btn mobile-menu-btn" onclick="toggleSidebar(true)">☰</button>
+            </div>
+        </header>
+
+        <div style="padding: 0 10px;">
+            <button id="installAppBtn" class="panel-btn saji-btn hidden full-width mt-15" style="border-radius: 12px; font-size: 1rem;">📲 تثبيت النظام على الجهاز</button>
+        </div>
+
+        <div class="hero-ai-banner mt-20 panel-card saji-border" onclick="openChatModal()">
+            <div class="hero-ai-content">
+                <span class="hero-ai-icon">🤖</span>
+                <div class="hero-ai-text">
+                    <h3>المساعد الذكي للإدارة المركزية ✨</h3>
+                    <p>يمكنني مساعدتك في كتابة خطط البرامج، كليشات الشهادات، وتحليل البيانات بضغطة زر.</p>
+                </div>
+            </div>
+            <button class="panel-btn saji-btn ai-action-btn">ابدأ المحادثة ➤</button>
+        </div>
+
+        <div class="square-panel-grid mt-20">
+            <button class="panel-card square-btn saji-hover-card" onclick="openDirectCodeModal()">
+                <div class="card-icon">👤</div>
+                <div class="card-text-container"><h3>بوابة الكادر</h3><p class="service-desc">استعرض معلوماتك الشخصية وملفك</p></div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="openAdminPasswordModal()">
+                <div class="card-icon">💼</div>
+                <div class="card-text-container"><h3>الإدارة المركزية</h3><p class="service-desc">سجلات الحضور، الإحصائيات، والأعضاء</p></div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateTo('activitiesScreen')">
+                <div class="card-icon">📝</div>
+                <div class="card-text-container"><h3>الاستمارات</h3><p class="service-desc">الأنشطة، التخطيط، والكشافة</p></div>
+            </button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateTo('socialScreen')">
+                <div class="card-icon">🌐</div>
+                <div class="card-text-container"><h3>المنصات الإعلامية</h3><p class="service-desc">روابط الصفحات الرسمية وحساباتها</p></div>
+            </button>
+        </div>
+
+        <!-- ==================== الواجهة التعريفية ==================== -->
+        <section class="mt-20 syg-bento-showcase" id="directorateBriefSection">
+            <style>
+                .syg-bento-showcase{width:100%;display:flex;flex-direction:column;gap:18px;margin-top:25px}
+                .syg-master-banner{background:linear-gradient(135deg,#091326 0%,#132a4a 55%,#0b3c5d 100%);border-radius:20px;padding:26px 28px;color:#fff;position:relative;overflow:hidden;border:1px solid rgba(0,180,216,.35);box-shadow:0 12px 32px rgba(0,0,0,.22)}
+                .syg-master-banner::before{content:'';position:absolute;top:-60px;left:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(0,180,216,.22) 0%,transparent 70%);pointer-events:none}
+                .syg-banner-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:center;position:relative;z-index:2}
+                .syg-identity-side{display:flex;flex-direction:column;gap:12px}
+                .syg-identity-top{display:flex;align-items:center;gap:16px}
+                .syg-emblem-box{width:68px;height:68px;border-radius:18px;background:#fff;padding:6px;box-shadow:0 8px 20px rgba(0,0,0,.3),0 0 0 3px rgba(0,180,216,.45);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+                .syg-emblem-box img{width:100%;height:100%;object-fit:contain}
+                .syg-title-stack .syg-kicker{display:inline-flex;align-items:center;gap:6px;background:rgba(0,180,216,.2);border:1px solid rgba(144,224,239,.4);color:#90e0ef;font-size:.75rem;font-weight:800;padding:3px 12px;border-radius:50px;margin-bottom:6px}
+                .syg-title-stack h2{font-family:'Reem Kufi','Tajawal',sans-serif;font-size:1.45rem;color:#fff;margin:0;line-height:1.3}
+                .syg-summary-lead{font-size:.9rem;color:#dbeafe;line-height:1.75;margin:0;background:rgba(255,255,255,.06);border-right:3px solid #00b4d8;padding:10px 14px;border-radius:10px}
+                .syg-timeline-box{background:rgba(7,15,32,.55);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+                .syg-timeline-title{font-size:.82rem;font-weight:800;color:#90e0ef;display:flex;align-items:center;gap:8px;border-bottom:1px dashed rgba(255,255,255,.15);padding-bottom:8px}
+                .syg-milestone-list{display:flex;flex-direction:column;gap:10px}
+                .syg-milestone-item{display:flex;align-items:center;gap:12px}
+                .syg-ms-year{min-width:85px;text-align:center;background:linear-gradient(135deg,#00b4d8,#0077b6);color:#fff;font-size:.76rem;font-weight:800;padding:4px 8px;border-radius:8px;box-shadow:0 3px 8px rgba(0,180,216,.3)}
+                .syg-ms-desc{font-size:.82rem;color:#f1f5f9;font-weight:600;line-height:1.4}
+                .syg-bento-triad{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+                .syg-triad-card{background:var(--panel-bg);border:1px solid var(--panel-border-top);border-radius:16px;padding:18px 20px;position:relative;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.06);transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;gap:8px}
+                .syg-triad-card:hover{transform:translateY(-4px);box-shadow:0 12px 25px var(--saji-glow)}
+                .syg-triad-card.vision-card{border-top:4px solid #00b4d8}.syg-triad-card.mission-card{border-top:4px solid #10b981}.syg-triad-card.duty-card{border-top:4px solid #f59e0b}
+                .syg-triad-watermark{position:absolute;left:12px;bottom:-8px;font-size:4.2rem;opacity:.05;pointer-events:none;color:var(--text-main)}
+                .syg-triad-head{display:flex;align-items:center;gap:10px}
+                .syg-triad-badge{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0}
+                .vision-card .syg-triad-badge{background:rgba(0,180,216,.14);color:#00b4d8}.mission-card .syg-triad-badge{background:rgba(16,185,129,.14);color:#10b981}.duty-card .syg-triad-badge{background:rgba(245,158,11,.14);color:#f59e0b}
+                .syg-triad-head h3{font-size:1.02rem;font-weight:800;color:var(--text-main);margin:0}
+                .syg-triad-card p{font-size:.85rem;color:var(--text-muted);line-height:1.7;margin:0;position:relative;z-index:1}
+                .syg-explorer-shell{background:var(--panel-bg);border:1px solid var(--panel-border-top);border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,.07)}
+                .syg-mode-switcher{display:flex;flex-wrap:wrap;gap:10px;padding-bottom:16px;margin-bottom:18px;border-bottom:1px solid var(--panel-border-top)}
+                .syg-mode-btn{flex:1;min-width:170px;background:rgba(0,0,0,.12);border:1.5px solid var(--panel-border-top);border-radius:14px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--text-main);font-family:'Tajawal',sans-serif;transition:all .25s}
+                .light-mode .syg-mode-btn{background:#f8fafc;border-color:#e2e8f0}
+                .syg-mode-btn:hover{border-color:var(--saji-main);transform:translateY(-2px)}
+                .syg-mode-btn.active{background:linear-gradient(135deg,#0B132B 0%,#1C2541 100%);color:#fff;border-color:#00b4d8;box-shadow:0 6px 18px rgba(0,180,216,.22)}
+                .syg-mode-btn-right{display:flex;align-items:center;gap:10px;font-size:.92rem;font-weight:800}
+                .syg-mode-btn-right i{color:#00b4d8;font-size:1.1rem}
+                .syg-mode-count{background:rgba(0,180,216,.18);color:#00b4d8;font-size:.75rem;font-weight:800;padding:2px 10px;border-radius:50px}
+                .syg-mode-btn.active .syg-mode-count{background:#00b4d8;color:#fff}
+                .syg-explorer-pane{display:none;animation:fadeIn .3s ease}.syg-explorer-pane.active{display:block}
+                .syg-filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+                .syg-filter-chip{background:rgba(0,180,216,.08);border:1px solid rgba(0,180,216,.25);color:var(--text-main);padding:6px 14px;border-radius:50px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s}
+                .syg-filter-chip:hover{border-color:#00b4d8}.syg-filter-chip.active{background:#00b4d8;color:#fff;border-color:#00b4d8;box-shadow:0 3px 10px rgba(0,180,216,.3)}
+                .syg-inst-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:14px}
+                .syg-inst-card{background:rgba(0,0,0,.14);border:1px solid var(--panel-border-top);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;transition:all .25s}
+                .light-mode .syg-inst-card{background:#f8fafc;border-color:#e2e8f0}
+                .syg-inst-card:hover{transform:translateY(-3px);border-color:#00b4d8;box-shadow:0 8px 20px rgba(0,180,216,.14)}
+                .syg-inst-top{padding:14px 16px 10px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(0,180,216,.12)}
+                .syg-inst-avatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0077b6,#00b4d8);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;box-shadow:0 4px 10px rgba(0,180,216,.25)}
+                .syg-inst-meta{flex:1;min-width:0}.syg-inst-meta h4{font-size:.95rem;font-weight:800;color:var(--text-main);margin:0 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+                .syg-inst-badges{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+                .syg-age-pill{background:rgba(16,185,129,.14);color:#10b981;border:1px solid rgba(16,185,129,.3);font-size:.72rem;font-weight:800;padding:1px 8px;border-radius:6px}
+                .light-mode .syg-age-pill{color:#047857}.syg-inst-num{font-size:.75rem;font-weight:800;color:var(--text-muted);opacity:.7}
+                .syg-inst-desc{padding:12px 16px 14px;font-size:.83rem;color:var(--text-muted);line-height:1.65;margin:0;flex:1}
+                .syg-org-top-bar{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;padding:12px;background:rgba(0,180,216,.08);border:1px dashed rgba(0,180,216,.35);border-radius:12px}
+                .syg-org-node{background:linear-gradient(135deg,#0B132B,#1C2541);color:#fff;padding:8px 18px;border-radius:10px;font-size:.86rem;font-weight:800;border:1px solid #00b4d8;display:inline-flex;align-items:center;gap:8px}
+                .syg-dept-matrix{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+                .syg-dept-tile{background:rgba(0,0,0,.14);border:1px solid var(--panel-border-top);border-radius:12px;padding:14px;display:flex;align-items:flex-start;gap:12px;transition:all .25s}
+                .light-mode .syg-dept-tile{background:#f8fafc;border-color:#e2e8f0}.syg-dept-tile:hover{border-color:#00b4d8;transform:translateY(-2px)}
+                .syg-dept-num-box{width:40px;height:40px;border-radius:10px;background:rgba(0,180,216,.14);border:1px solid rgba(0,180,216,.3);color:#00b4d8;display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0}
+                .light-mode .syg-dept-num-box{color:#0077b6}.syg-dept-info h4{font-size:.92rem;font-weight:800;color:var(--text-main);margin:0 0 4px}.syg-dept-info p{font-size:.81rem;color:var(--text-muted);line-height:1.6;margin:0}
+                .syg-goals-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+                .syg-goal-strip{background:rgba(0,0,0,.14);border:1px solid var(--panel-border-top);border-right:4px solid #00b4d8;border-radius:12px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;transition:all .2s}
+                .light-mode .syg-goal-strip{background:#f8fafc;border-color:#e2e8f0;border-right-color:#0077b6}.syg-goal-strip:hover{transform:translateX(-3px);border-color:#00b4d8}
+                .syg-goal-idx{width:30px;height:30px;border-radius:8px;background:#00b4d8;color:#fff;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+                .syg-goal-txt h5{font-size:.9rem;font-weight:800;color:var(--gold);margin:0 0 3px}.syg-goal-txt p{font-size:.82rem;color:var(--text-main);line-height:1.55;margin:0}
+                @media(max-width:920px){.syg-banner-grid,.syg-bento-triad,.syg-goals-list{grid-template-columns:1fr}}
+                @media(max-width:600px){.syg-master-banner{padding:18px 16px}.syg-title-stack h2{font-size:1.2rem}.syg-explorer-shell{padding:14px}.syg-mode-btn{min-width:100%}}
+            </style>
+
+            <!-- 1. البانر الرئيسي ومسيرة التأسيس -->
+            <div class="syg-master-banner">
+                <div class="syg-banner-grid">
+                    <div class="syg-identity-side">
+                        <div class="syg-identity-top">
+                            <div class="syg-emblem-box">
+                                <img src="https://i.ibb.co/VWRf0rLy/IMG-20260303-004928-368.png" alt="شعار تجمع شباب الشريعة" onerror="this.src='https://i.ibb.co/N2BJ7Srb/N2BJ7Srb.jpg'">
+                            </div>
+                            <div class="syg-title-stack">
+                                <span class="syg-kicker"><i class="fa-solid fa-kaaba"></i> البطاقة التعريفية الرسمية</span>
+                                <h2>تجمع شباب الشريعة - مديرية البصرة</h2>
+                            </div>
+                        </div>
+                        <p class="syg-summary-lead">منظومة من المؤسسات التطوعية ذات تخصصات متعددة (دينية، ثقافية، قرآنية، فكرية، اجتماعية، خدمية، رياضية، صحية، وإعلامية) تعمل على بناء الشباب عقائدياً وبدنياً وتقديم الخدمات المجتمعية الشاملة.</p>
+                    </div>
+                    <div class="syg-timeline-box">
+                        <div class="syg-timeline-title"><i class="fa-solid fa-clock-rotate-left"></i> محطات الانطلاق والهيكلة</div>
+                        <div class="syg-milestone-list">
+                            <div class="syg-milestone-item"><span class="syg-ms-year">سنة 2012 م</span><span class="syg-ms-desc">انطلاق البذرة الأولى عبر جمعية كشافة الإمام الحسين (ع) - مفوضية البصرة</span></div>
+                            <div class="syg-milestone-item"><span class="syg-ms-year">2022/11/13</span><span class="syg-ms-desc">الانطلاق التدريجي للعمل المؤسسي المتكامل في مديرية البصرة</span></div>
+                            <div class="syg-milestone-item"><span class="syg-ms-year">الهيكل الفاعل</span><span class="syg-ms-desc">يضم التجمع حالياً (11) مؤسسة تخصصية يسندها (10) أقسام إدارية مركزية</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. ثلاثية الرؤية والرسالة والمهمة -->
+            <div class="syg-bento-triad">
+                <div class="syg-triad-card vision-card">
+                    <i class="fa-solid fa-eye syg-triad-watermark"></i>
+                    <div class="syg-triad-head"><div class="syg-triad-badge"><i class="fa-solid fa-eye"></i></div><h3>رؤيتنا</h3></div>
+                    <p>صناعة إنسان مسلم رسالي واعٍ يحمل المسؤولية الشرعية والتمهيد للإمام الحجة (عج)، وإعداد كوادر شبابية تستمد قيمها من التراث الإسلامي الأصيل ومسيرة الشهداء وحكمة العلماء.</p>
+                </div>
+                <div class="syg-triad-card mission-card">
+                    <i class="fa-solid fa-book-quran syg-triad-watermark"></i>
+                    <div class="syg-triad-head"><div class="syg-triad-badge"><i class="fa-solid fa-book-quran"></i></div><h3>رسالتنا</h3></div>
+                    <p>منبر شبابي تربوي تطوعي يسعى لبناء جيل مؤمن بالله ورسوله وأهل بيته (عليهم السلام)، وترسيخ قيم القرآن الكريم والولاية المحمدية في قلوب الشباب وربطهم بالقيم الدينية والأخلاقية.</p>
+                </div>
+                <div class="syg-triad-card duty-card">
+                    <i class="fa-solid fa-hands-holding-circle syg-triad-watermark"></i>
+                    <div class="syg-triad-head"><div class="syg-triad-badge"><i class="fa-solid fa-hands-holding-circle"></i></div><h3>مهمتنا</h3></div>
+                    <p>تنمية قدرات الشباب عبر الدورات والمخيمات التربوية، ورعاية عوائل الشهداء والجرحى والمجاهدين، وتوفير الخدمات الصحية والرياضية والإنمائية لصناعة قادة مؤثرين يخدمون المجتمع.</p>
+                </div>
+            </div>
+
+            <!-- 3. مستكشف الهيكلة التفاعلي -->
+            <div class="syg-explorer-shell">
+                <div class="syg-mode-switcher">
+                    <button type="button" class="syg-mode-btn active" onclick="switchSygExplorer('pane-institutions', this)"><span class="syg-mode-btn-right"><i class="fa-solid fa-layer-group"></i> مؤسسات المديرية والفئات العمرية</span><span class="syg-mode-count">11 مؤسسة</span></button>
+                    <button type="button" class="syg-mode-btn" onclick="switchSygExplorer('pane-departments', this)"><span class="syg-mode-btn-right"><i class="fa-solid fa-sitemap"></i> الهيكل والأقسام الإدارية المركزية</span><span class="syg-mode-count">10 أقسام</span></button>
+                    <button type="button" class="syg-mode-btn" onclick="switchSygExplorer('pane-goals', this)"><span class="syg-mode-btn-right"><i class="fa-solid fa-bullseye"></i> الأهداف الاستراتيجية للمديرية</span><span class="syg-mode-count">8 محاور</span></button>
+                </div>
+
+                <!-- أ. المؤسسات التخصصية -->
+                <div id="pane-institutions" class="syg-explorer-pane active">
+                    <div class="syg-filter-bar">
+                        <button type="button" class="syg-filter-chip active" onclick="filterSygInstitutions('all', this)">الكل (11)</button>
+                        <button type="button" class="syg-filter-chip" onclick="filterSygInstitutions('youth', this)">الفتيان والشباب والرياضة</button>
+                        <button type="button" class="syg-filter-chip" onclick="filterSygInstitutions('academic', this)">الطلبة والخريجون</button>
+                        <button type="button" class="syg-filter-chip" onclick="filterSygInstitutions('service', this)">الخدمي والصحي والشهداء</button>
+                        <button type="button" class="syg-filter-chip" onclick="filterSygInstitutions('cultural', this)">الثقافي والإنشادي والنسوي</button>
+                    </div>
+                    <div class="syg-inst-grid" id="sygInstitutionsGrid">
+                        <div class="syg-inst-card" data-cat="youth"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-campground"></i></div><div class="syg-inst-meta"><h4>جمعية كشافة الإمام الحسين (ع)</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-user-clock"></i> الأعمار: 6 - 20 سنة</span><span class="syg-inst-num">#01</span></div></div></div><p class="syg-inst-desc">مؤسسة تربوية تطوعية تهدف لبناء الشباب بدنياً وعقائدياً من خلال البرامج والمخيمات والرحلات الخلوية والأنشطة المستمرة طوال السنة.</p></div>
+                        <div class="syg-inst-card" data-cat="service"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-trowel-bricks"></i></div><div class="syg-inst-meta"><h4>مؤسسة جهاد البناء الإنمائية</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-hammer"></i> خدمية وإنمائية عامة</span><span class="syg-inst-num">#02</span></div></div></div><p class="syg-inst-desc">توفير الخدمات للمساجد والحسينيات والمدارس والمؤسسات، وتلبية الاحتياجات الاجتماعية للفقراء والمرضى والحفاظ على التوازن البيئي.</p></div>
+                        <div class="syg-inst-card" data-cat="youth"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-futbol"></i></div><div class="syg-inst-meta"><h4>مؤسسة التألق الرياضية</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-user-clock"></i> الأعمار: 8 - 25 سنة</span><span class="syg-inst-num">#03</span></div></div></div><p class="syg-inst-desc">تطوير مهارات الشباب رياضياً وعقائدياً وإعداد فرق ومدارس رياضية ذات تخصصات متعددة للمنافسة بها على مستويات عالية.</p></div>
+                        <div class="syg-inst-card" data-cat="cultural"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-book-open"></i></div><div class="syg-inst-meta"><h4>مؤسسة ابن الجواد الثقافية</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-mosque"></i> ثقافية ودينية عامة</span><span class="syg-inst-num">#04</span></div></div></div><p class="syg-inst-desc">إحياء ولادات ووفيات المعصومين (ع) والمناسبات الوطنية، وإقامة المحافل التأبينية للعلماء والشهداء والمسابقات الثقافية.</p></div>
+                        <div class="syg-inst-card" data-cat="academic"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-graduation-cap"></i></div><div class="syg-inst-meta"><h4>مؤسسة مداد الطلابية</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-user-graduate"></i> الأعمار: 18 - 28 سنة</span><span class="syg-inst-num">#05</span></div></div></div><p class="syg-inst-desc">تستهدف طلبة الجامعات ضمن برامج ودورات تطويرية لبنائهم عقائدياً وروحياً وتأهيلهم لقيادة المجتمع وإقامة الندوات العلمية في جامعاتهم.</p></div>
+                        <div class="syg-inst-card" data-cat="service"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-heart-pulse"></i></div><div class="syg-inst-meta"><h4>المؤسسة الصحية</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-stethoscope"></i> الأعمار: 6 سنوات فما فوق</span><span class="syg-inst-num">#06</span></div></div></div><p class="syg-inst-desc">تختص بتقديم الدورات والورش والندوات الصحية والإسعافية لزيادة الوعي الصحي مناطقياً ولمختلف فئات المجتمع.</p></div>
+                        <div class="syg-inst-card" data-cat="service"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-award"></i></div><div class="syg-inst-meta"><h4>مؤسسة أبناء المهندس</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-dove"></i> رعاية وتوثيق الشهداء</span><span class="syg-inst-num">#07</span></div></div></div><p class="syg-inst-desc">إحياء مناسبات الشهداء وإقامة المحافل التأبينية والأمسيات القرآنية وتوثيق سيرهم، وتقديم الدعم لعوائل الشهداء والجرحى عبر الزيارات الدورية.</p></div>
+                        <div class="syg-inst-card" data-cat="cultural"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-hands-holding-child"></i></div><div class="syg-inst-meta"><h4>مؤسسة الحوراء زينب (ع) النسوية</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-users"></i> الأعمار: 18 سنة فما فوق</span><span class="syg-inst-num">#08</span></div></div></div><p class="syg-inst-desc">تأهيل النساء والفتيات عبر فتح فرق مناطقية لإعطاء الدروس الفقهية والعقائدية والورش الأسرية لإعداد قيادات نسوية واعية في المجتمع.</p></div>
+                        <div class="syg-inst-card" data-cat="cultural"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-microphone-lines"></i></div><div class="syg-inst-meta"><h4>فرقة إنشاد أنيس النفوس</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-music"></i> فرق بمختلف الأعمار</span><span class="syg-inst-num">#09</span></div></div></div><p class="syg-inst-desc">فرقة متخصصة بإنتاج الأناشيد الدينية والرسالية والمشاركة بها في المحافل التأبينية والمناسبات وإعداد فرق إنشادية متعددة.</p></div>
+                        <div class="syg-inst-card" data-cat="youth"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-seedling"></i></div><div class="syg-inst-meta"><h4>مؤسسة أجيال القائم (عج)</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-user-clock"></i> الأعمار: 12 سنة فما فوق</span><span class="syg-inst-num">#10</span></div></div></div><p class="syg-inst-desc">تختص بأبناء الشهداء والمجاهدين والجرحى والعناية بهم عبر إدخالهم في برامج ودورات وأنشطة نوعية ومخيمات لتأهيلهم كقادة للمجتمع.</p></div>
+                        <div class="syg-inst-card" data-cat="academic"><div class="syg-inst-top"><div class="syg-inst-avatar"><i class="fa-solid fa-users-rays"></i></div><div class="syg-inst-meta"><h4>مؤسسة الخمسة أصحاب الكساء</h4><div class="syg-inst-badges"><span class="syg-age-pill"><i class="fa-solid fa-briefcase"></i> الشباب الخريجون</span><span class="syg-inst-num">#11</span></div></div></div><p class="syg-inst-desc">تستهدف الشباب الخريجين لإنشاء حلقات خماسية متعددة التخصصات تدخل ضمن برنامج تطويري ومهني خاص ومخيمات نوعية.</p></div>
+                    </div>
+                </div>
+
+                <!-- ب. الهيكل التنظيمي والأقسام الإدارية -->
+                <div id="pane-departments" class="syg-explorer-pane">
+                    <div class="syg-org-top-bar">
+                        <span class="syg-org-node"><i class="fa-solid fa-user-shield"></i> مدير المديرية</span>
+                        <i class="fa-solid fa-arrow-left" style="color: var(--saji-main);"></i>
+                        <span class="syg-org-node"><i class="fa-solid fa-user-tie"></i> النائب (معاون المدير)</span>
+                        <i class="fa-solid fa-arrow-left" style="color: var(--saji-main);"></i>
+                        <span class="syg-org-node" style="background: rgba(0, 180, 216, 0.2); color: var(--gold);"><i class="fa-solid fa-network-wired"></i> الأقسام المركزية والمؤسسات</span>
+                    </div>
+                    <div class="syg-dept-matrix">
+                        <div class="syg-dept-tile"><div class="syg-dept-num-box"><i class="fa-solid fa-building-user"></i></div><div class="syg-dept-info"><h4>1. قسم الإدارة</h4><p>تنظيم الهيكل الإداري وتنسيق العمليات اليومية ومتابعة الكتب الصادرة والواردة والدوام اليومي وتقارير الاجتماعات.</p></div></div>
+                        <div class="syg-dept-tile"><div class="syg-dept-num-box"><i class="fa-solid fa-boxes-stacked"></i></div><div class="syg-dept-info"><h4>2. التجهيز والدعم</h4><p>شراء المعدات والمواد اللازمة لعمليات المديرية، وإدارة وصيانة الأصول والممتلكات والمباني لضمان كفاءتها.</p></div></div>
+                        <div class="syg-dept-tile"><div class="syg-dept-num-box"><i class="fa-solid fa-clipboard-check"></i></div><div class="syg-dept-info"><h4>3. قسم المتابعة</h4><p>مراقبة تنفيذ الأنشطة والمشاريع وتقييم الأداء وتشخيص المعوقات وحلها ورفع التقارير الدورية للإدارة العليا.</p></div></div>
+                        <div class="syg-dept-tile"><div class="syg-dept-num-box"><i class="fa-solid fa-coins"></i></div><div class="syg-dept-info"><h4>4. القسم المالي</h4><p>إدارة التخطيط المالي ومراقبة الإنفاق وإعداد التقارير والميزانيات وتحليل الأداء المالي لضمان كفاءة الموارد.</p></div></div>
+                        <div class="syg-dept-tile"><div class="syg-dept-num-box"><i class="fa-solid fa-chart-line"></i></div><div class="syg-dept-info"><h4>5. التخطيط والبرامج</h4><p>وضع الأهداف الاستراتيجية والجداول الزمنية وتحليل الموارد ورسم ومناقشة البرامج الخاصة بالمديرية.</p></div></div>
+                        <div class="syg-dept-tile"><div class="syg-dept-num-box"><i class="fa-solid fa-handshake"></i></div><div class="syg-dept-info"><h4>6. قسم العلاقات</h4><p>رسم خطة شاملة لزيارة الدوائر والمؤسسات الحكومية وغير الحكومية والدينية والمجتمعية وبناء أواصر التعاون.</p></div></div>
+                        <div class="syg-dept-tile"><div class="syg-dept-num-box"><i class="fa-solid fa-photo-film"></i></div><div class="syg-dept-info"><h4>7. الإعلام المركزي</h4><p>تغطية وتوثيق كافة الأنشطة، وإعداد التقارير المصورة والفيديوهات والتصاميم، وإعداد أرشيف شهري وسنوي.</p></div></div>
+                        <div class="syg-dept-tile"><div class="syg-dept-num-box"><i class="fa-solid fa-map-location-dot"></i></div><div class="syg-dept-info"><h4>8. جرد المعلومات</h4><p>جمع البيانات وتحليلها إحصائياً وتوفير الخرائط الجغرافية والتقارير الدقيقة لدعم القرارات الاستراتيجية.</p></div></div>
+                        <div class="syg-dept-tile"><div class="syg-dept-num-box"><i class="fa-solid fa-chalkboard-user"></i></div><div class="syg-dept-info"><h4>9. قسم التدريب</h4><p>إعداد ومتابعة البرنامج التدريبي الشامل لكافة المؤسسات بالتنسيق المباشر مع مدراء المؤسسات والأقسام.</p></div></div>
+                        <div class="syg-dept-tile"><div class="syg-dept-num-box"><i class="fa-solid fa-id-card"></i></div><div class="syg-dept-info"><h4>10. الموارد البشرية</h4><p>تنظيم كافة المعلومات والملفات الشخصية الخاصة بالكوادر الأساسية والأفراد المتطوعين ومتابعتهم دورياً.</p></div></div>
+                    </div>
+                </div>
+
+                <!-- ج. الأهداف الاستراتيجية -->
+                <div id="pane-goals" class="syg-explorer-pane">
+                    <div class="syg-goals-list">
+                        <div class="syg-goal-strip"><div class="syg-goal-idx">01</div><div class="syg-goal-txt"><h5>البناء العقائدي والتمهيدي</h5><p>بناء جيل إسلامي مؤمن يستمد عقائده وسلوكياته من الشريعة الإسلامية، وبناء مجتمع ممهد للإمام المهدي (عج).</p></div></div>
+                        <div class="syg-goal-strip"><div class="syg-goal-idx">02</div><div class="syg-goal-txt"><h5>إعداد القادة والكوادر الكفوءة</h5><p>تأهيل كوادر مؤمنة ونزيهة في كافة الاختصاصات، وصناعة قادة مؤثرين من الرجال والنساء لخدمة المجتمع والدين.</p></div></div>
+                        <div class="syg-goal-strip"><div class="syg-goal-idx">03</div><div class="syg-goal-txt"><h5>الارتباط بالقرآن وإحياء المناسبات</h5><p>الاهتمام بالقرآن الكريم حفظاً وتلاوةً وتربيةً، وإحياء المناسبات الدينية والعقائدية والوطنية.</p></div></div>
+                        <div class="syg-goal-strip"><div class="syg-goal-idx">04</div><div class="syg-goal-txt"><h5>رعاية عوائل الشهداء وتوثيق سيرهم</h5><p>تقديم الرعاية لعوائل الشهداء والجرحى والمجاهدين، وجمع تراث ووصايا الشهداء وصناعة الأفلام الوثائقية عنهم.</p></div></div>
+                        <div class="syg-goal-strip"><div class="syg-goal-idx">05</div><div class="syg-goal-txt"><h5>تمكين الأسرة والتكافل الاجتماعي</h5><p>تعزيز دور المرأة لبناء الأسرة الصالحة، وإطلاق المبادرات الخيرية والاجتماعية لدعم الفئات المحتاجة.</p></div></div>
+                        <div class="syg-goal-strip"><div class="syg-goal-idx">06</div><div class="syg-goal-txt"><h5>البحث الفكري والتحول الرقمي</h5><p>تأسيس مركز أبحاث ودراسات لمعالجة الظواهر الاجتماعية، وإنشاء تطبيقات ومنصات تعليمية إلكترونية هادفة.</p></div></div>
+                        <div class="syg-goal-strip"><div class="syg-goal-idx">07</div><div class="syg-goal-txt"><h5>التنمية الرياضية والصحية والبيئية</h5><p>إنشاء مدارس كروية وفرق رياضية، وإقامة الندوات الصحية التوعوية، وحملات النظافة وحماية البيئة.</p></div></div>
+                        <div class="syg-goal-strip"><div class="syg-goal-idx">08</div><div class="syg-goal-txt"><h5>طلب العلم والعمل الجماعي والتطوعي</h5><p>حث الشباب على التفوق العلمي والأكاديمي، وترسيخ حس المسؤولية الاجتماعية وروح العمل التطوعي.</p></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="panel-card saji-border mt-20" id="facebookSliderContainer" style="padding: 20px; display: none;">
+            <h3 class="primary-title text-center mb-15" style="font-size: 1.2rem;">آخر النشاطات والأخبار</h3>
+            <div class="swiper mySwiper"><div class="swiper-wrapper" id="fbWrapper"></div><div class="swiper-pagination"></div></div>
+        </div>
+    </div>
+
+    <!-- الشاشات الفرعية -->
+    <div id="aboutView" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title">حول النظام</h3><button class="panel-btn mini-btn" onclick="returnToDashboardFromSidebar('aboutView')">↩ العودة</button></div>
+        <div class="panel-card content-card saji-border mt-20 text-center p-15">
+            <div class="inset-pill text-center" style="display: block; line-height: 1.8; font-size: 1rem;">
+                موقع مؤسسي خاص بأعضاء وإدارة تجمع شباب الشريعة - مديرية البصرة<br><br>
+                <span style="color: var(--error); font-weight: bold; background: rgba(231,76,60,0.1); padding: 5px 10px; border-radius: 8px;">يمنع منعاً باتاً تداول رابط الموقع، وهناك أداة مراقبة أمنية لحماية البيانات.</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title">بوابة الإدارة المركزية</h3><button class="panel-btn mini-btn" onclick="goBackToDashboard()">↩ العودة</button></div>
+        <div class="square-panel-grid mt-20">
+            <button class="panel-card square-btn saji-hover-card" onclick="openAdminKaderView()"><div class="card-icon">👥</div><div class="card-text-container"><h3>سجل الكادر</h3><p class="service-desc">معلومات الأعضاء المباشرة</p></div></button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateToAttendanceLogs()"><div class="card-icon">📅</div><div class="card-text-container"><h3>سجل الحضور</h3><p class="service-desc">المتابعة اليومية والشهرية</p></div></button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateToFormsArchive()"><div class="card-icon">📁</div><div class="card-text-container"><h3>أرشيف الاستمارات</h3><p class="service-desc">توثيق الأنشطة المركزية</p></div></button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateToPlanningArchive()"><div class="card-icon">📈</div><div class="card-text-container"><h3>قسم التخطيط</h3><p class="service-desc">البرامج والخطط الاستراتيجية</p></div></button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateToMediaCentral()"><div class="card-icon">🎥</div><div class="card-text-container"><h3>قسم الإعلام المركزي</h3><p class="service-desc">الموجزات والتقييم الإعلامي</p></div></button>
+        </div>
+        <div class="mt-20">
+            <button class="panel-btn saji-btn full-width" style="font-size: 1.1rem; padding: 12px;" onclick="openChartsScreen()">📊 لوحة الإحصائيات والرسوم البيانية الشاملة</button>
+        </div>
+    </div>
+
+    <!-- قسم الإعلام المركزي والموجزات والتقييم الإعلامي -->
+    <div id="mediaCentralScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title">قسم الإعلام المركزي</h3><button class="panel-btn mini-btn" onclick="goBackToAdminFromMedia()">↩ العودة</button></div>
+        <div class="square-panel-grid mt-20">
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateToAnnualSummaries()"><div class="card-icon">📑</div><div class="card-text-container"><h3>الموجزات السنوية</h3><p class="service-desc">عرض وتحميل موجز الأنشطة</p></div></button>
+            <button class="panel-card square-btn saji-hover-card" onclick="navigateToMediaEvalAdmin()"><div class="card-icon">📊</div><div class="card-text-container"><h3>التقييم الإعلامي</h3><p class="service-desc">إحصائيات الأشهر والسنوات للكادر</p></div></button>
+        </div>
+    </div>
+
+    <!-- شاشة التقييم الإعلامي (تُملأ ديناميكياً من script.js) -->
+    <div id="mediaEvalAdminScreen" class="screen hidden"></div>
+
+    <div id="annualSummariesScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title">الموجزات السنوية</h3><button class="panel-btn mini-btn" onclick="goBackToMediaFromSummaries()">↩ العودة</button></div>
+        <div class="square-panel-grid mt-20">
+            <button class="panel-card square-btn saji-hover-card" onclick="openSummaryModal('2023')"><div class="card-icon">📊</div><div class="card-text-container"><h3>موجز أنشطة 2023</h3></div></button>
+            <button class="panel-card square-btn saji-hover-card" onclick="openSummaryModal('2024')"><div class="card-icon">📊</div><div class="card-text-container"><h3>موجز أنشطة 2024</h3></div></button>
+            <button class="panel-card square-btn saji-hover-card" onclick="openSummaryModal('2025')"><div class="card-icon">📊</div><div class="card-text-container"><h3>موجز أنشطة 2025</h3></div></button>
+        </div>
+    </div>
+
+    <div id="summaryPresentationScreen" class="screen hidden summary-fullpage-screen">
+        <div class="view-header panel-card saji-border summary-top-bar">
+            <div class="summary-title-group">
+                <h3 id="summaryPageTitle" class="primary-title" style="margin: 0;">موجز الأنشطة</h3>
+                <span class="auto-flip-badge">🔄 تقليب تلقائي للسلايدات</span>
+            </div>
+            <div class="summary-controls-group">
+                <select id="slideSpeedSelect" class="panel-input slide-speed-select" onchange="changeSlideAutoSpeed(this.value)" title="سرعة التقليب التلقائي">
+                    <option value="3000">⚡ سريع (3 ثوانٍ)</option>
+                    <option value="5000" selected>⏱️ متوسط (5 ثوانٍ)</option>
+                    <option value="8000">🐢 هادئ (8 ثوانٍ)</option>
+                </select>
+                <button id="summaryPptDownloadBtn" type="button" class="panel-btn saji-btn summary-dl-btn" onclick="startPptDirectDownload()">📥 تحميل بوربوينت</button>
+                <button class="panel-btn mini-btn" onclick="closeSummaryModal()">↩ العودة</button>
+            </div>
+        </div>
+        <div class="summary-slide-stage panel-card saji-border mt-15">
+            <iframe id="summarySlideIframe" src="" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+        </div>
+    </div>
+
+    <div id="chartsScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title">الرسوم البيانية للإدارة</h3><button class="panel-btn mini-btn" onclick="goBackToAdminFromCharts()">↩ العودة</button></div>
+        <div class="charts-grid mt-20">
+            <div class="panel-card saji-border p-15"><h4 class="text-center mb-15 gold-text">📊 الحالة الاجتماعية</h4><div style="position: relative; margin: auto; height: 240px; width: 240px;"><canvas id="maritalChart"></canvas></div></div>
+            <div class="panel-card saji-border p-15"><h4 class="text-center mb-15 gold-text">📈 الفئات العمرية</h4><div class="inset-pill mb-15"><span class="label">متوسط الأعمار:</span><span class="value" id="averageAgeVal" style="color:var(--text-main); font-weight:bold;">0 سنة</span></div><div style="position: relative; width: 100%; height: 220px;"><canvas id="ageChart"></canvas></div></div>
+            <div class="panel-card saji-border p-15"><h4 class="text-center mb-15 gold-text">🛡️ السجل الانضباطي</h4><div style="position: relative; width: 100%; height: 220px;"><canvas id="punishmentChart"></canvas></div></div>
+            <div class="panel-card saji-border p-15"><h4 class="text-center mb-15 gold-text">🏆 لوحة التميز (الشكر)</h4><div style="position: relative; width: 100%; height: 220px;"><canvas id="awardsChart"></canvas></div></div>
+        </div>
+    </div>
+
+    <div id="adminKaderListScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title">سجل أعضاء المديرية</h3><button class="panel-btn mini-btn" onclick="goBackToAdminScreen()">↩ العودة</button></div>
+        <div class="names-square-grid" id="adminAliasesContainer"></div>
+    </div>
+
+    <!-- ملف العضو -->
+    <div id="profileDetailScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border mb-20">
+            <h3 class="primary-title">الملف الشخصي للعضو</h3>
+            <button class="panel-btn mini-btn" id="profileBackBtn" onclick="closeProfileScreen()">العودة ↩</button>
+        </div>
+        <div class="profile-layout">
+            <div class="profile-sidebar panel-card saji-border p-15 text-center">
+                <div class="profile-avatar-frame saji-border">
+                    <img id="profileImage" src="" alt="صورة العضو" onerror="handleImageError(this)">
+                    <div class="avatar-fallback hidden">لا توجد صورة</div>
+                </div>
+                <h2 id="profileFullName" class="gold-text profile-name mb-15">الاسم الكامل</h2>
+                <a id="driveLinkBtn" href="#" target="_blank" class="panel-btn saji-btn full-width block-link text-center mb-15">📁 المستمسكات والصور</a>
+                <div class="profile-actions-grid">
+                    <button class="pill-action-btn copy-btn" onclick="copyMemberInfo()">📋 نسخ البيانات</button>
+                    <button class="pill-action-btn pdf-btn" onclick="openPdfPreview()">📄 تحميل PDF</button>
+                </div>
+            </div>
+            
+            <div class="profile-main panel-card saji-border p-15">
+                <h3 class="gold-text mb-15 border-bottom-subtle">المعلومات الأساسية</h3>
+                <div id="primaryDetailsContainer" class="basic-info-grid mb-20"></div>
+                
+                <h3 class="gold-text mb-15 border-bottom-subtle mt-20">السجلات التفصيلية</h3>
+                <div class="modern-tabs-grid">
+                    <button class="panel-tab-btn" onclick="loadSpecificDetail('skills', this)">المهارات</button>
+                    <button class="panel-tab-btn" onclick="loadSpecificDetail('housing', this)">السكن</button>
+                    <button class="panel-tab-btn" onclick="loadSpecificDetail('work', this)">العمل</button>
+                    <button class="panel-tab-btn" onclick="loadSpecificDetail('punishments', this)">العقوبات</button>
+                    <button class="panel-tab-btn" onclick="loadSpecificDetail('awards', this)">الشكر</button>
+                </div>
+                <div id="dynamicDetailDisplayBox" class="dynamic-detail-box hidden mt-15">
+                    <div class="panel-card p-15" style="background: rgba(0,0,0,0.05);">
+                        <h4 id="dynamicDetailTitle" class="primary-title text-center mb-15">عنوان القسم</h4>
+                        <div id="dynamicDetailContent"></div>
+                    </div>
+                </div>
+
+                <!-- قائمة «تقييمي» المستقلة أسفل المعلومات والسجلات التفصيلية -->
+                <div id="memberEvaluationSection" class="mt-20" style="border-top: 1px dashed rgba(0, 180, 216, 0.35); padding-top: 18px;">
+                    <button type="button" id="toggleMemberEvalBtn" class="panel-btn saji-btn full-width" style="padding: 12px 18px; border-radius: 12px; font-size: 1rem; display: flex; align-items: center; justify-content: space-between;" onclick="toggleMemberEvaluationPanel()">
+                        <span>تقييمي</span>
+                        <span id="memberEvalChevron" style="font-size: 0.85rem;">▼</span>
+                    </button>
+
+                    <div id="memberEvalPanelBox" class="panel-card p-15 mt-15 hidden" style="background: rgba(0,0,0,0.05); border: 1px solid rgba(0, 180, 216, 0.3);">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
+                            <button type="button" id="evalTabMediaBtn" class="panel-btn saji-btn" style="padding: 10px; border-radius: 10px;" onclick="openMemberEvalSubTab('media')">📢 التقييم الإعلامي</button>
+                            <button type="button" id="evalTabActBtn" class="panel-btn" style="padding: 10px; border-radius: 10px;" onclick="openMemberEvalSubTab('activities')">🎯 تقييم الأنشطة</button>
+                        </div>
+                        <div id="memberEvalSubContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الشاشات الأرشيفية -->
+    <div id="attendanceLogsScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title" id="attendanceScreenTitle">سجلات الحضور</h3><button class="panel-btn mini-btn" id="attendanceBackBtn" onclick="goBackToAdminFromLogs()">↩ العودة</button></div>
+        <div id="attendanceMonthsContainer" class="names-square-grid mt-20"></div>
+        <div id="attendanceDaysContainer" class="hidden mt-20"></div>
+    </div>
+
+    <div id="formsCategoryScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title">أرشيف الأنشطة</h3><button class="panel-btn mini-btn" onclick="goBackToAdminFromForms()">↩ العودة</button></div>
+        <div class="square-panel-grid mt-20">
+            <button class="panel-card square-btn saji-hover-card" onclick="loadFormsFolders('tajammu')"><div class="card-icon">📂</div><div class="card-text-container"><h3>استمارات التجمع</h3></div></button>
+            <button class="panel-card square-btn saji-hover-card" onclick="loadFormsFolders('scouts')"><div class="card-icon">⛺</div><div class="card-text-container"><h3>استمارات الكشافة</h3></div></button>
+        </div>
+    </div>
+
+    <div id="formsMonthsScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title" id="formsMonthsTitle">مجلدات الأشهر</h3><button class="panel-btn mini-btn" id="formsMonthsBackBtn" onclick="goBackToFormsCategory()">↩ العودة</button></div>
+        <div id="formsMonthsContainer" class="names-square-grid mt-20"></div>
+    </div>
+
+    <div id="formsListScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title" id="formsListTitle">الاستمارات</h3><button class="panel-btn mini-btn" onclick="goBackToFormsMonths()">↩ العودة</button></div>
+        <div id="monthActionContainer" class="mt-20 mb-10"></div>
+        <div id="formsCapsulesContainer" class="mt-10"></div>
+    </div>
+
+    <!-- بوابة الاستمارات الإلكترونية -->
+    <div id="activitiesScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title">بوابة الاستمارات الإلكترونية</h3><button class="panel-btn mini-btn" onclick="goBackToDashboard()">↩ العودة</button></div>
+        <div class="square-panel-grid mt-20">
+            <button type="button" onclick="openEmbeddedForm('tajammu')" class="panel-card square-btn saji-hover-card"><div class="card-icon">📝</div><div class="card-text-container"><h3>استمارة التجمع</h3><p class="service-desc">تقديم نشاط مركزي</p></div></button>
+            <button type="button" onclick="openEmbeddedForm('scouts')" class="panel-card square-btn saji-hover-card"><div class="card-icon">⛺</div><div class="card-text-container"><h3>استمارة الكشافة</h3><p class="service-desc">أنشطة المفوضية</p></div></button>
+            <button type="button" onclick="openEmbeddedForm('planning')" class="panel-card square-btn saji-hover-card" style="grid-column: 1 / -1;"><div class="card-icon">📈</div><div class="card-text-container"><h3>استمارة التخطيط والبرامج</h3><p class="service-desc">رفع الخطط الشهرية</p></div></button>
+        </div>
+    </div>
+
+    <!-- 1. استمارة نشاطات المديرية - تجمع شباب الشريعة -->
+    <div id="tajammuFormView" class="embedded-form-screen tajammu-form-theme hidden">
+        <div class="embedded-back-bar"><button type="button" class="embedded-back-btn" onclick="closeEmbeddedForms()"><i class="fa-solid fa-arrow-right"></i> العودة إلى بوابة الاستمارات</button></div>
+        <div class="gate-wrapper" id="tj_gateScreen">
+            <div class="gate-box">
+                <div class="gate-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h2>بوابة الدخول الآمنة</h2>
+                <p class="gate-note">يجب السماح بمشاركة الموقع كـ احتراز أمني اذا لم تسمح لن تتمكن من ارسال استمارتك</p>
+                <button type="button" id="tj_gateLocationBtn" class="gate-btn"><i class="fa-solid fa-location-crosshairs"></i><span class="btn-text">السماح للموقع</span></button>
+            </div>
+        </div>
+        <div class="page-wrapper hidden" id="tj_mainFormScreen">
+            <header class="official-header">
+                <div class="header-content">
+                    <div class="org-titles"><span class="org-badge"><i class="fa-solid fa-shield-check"></i> تم التوثيق الأمني للموقع</span><h1 class="main-org-name">تجمع شباب الشريعة</h1><h2 class="sub-org-name">مديرية البصرة</h2></div>
+                    <div class="logo-box"><img src="https://i.ibb.co/VWRf0rLy/IMG-20260303-004928-368.png" alt="شعار تجمع شباب الشريعة" class="custom-logo"></div>
+                </div>
+                <div class="header-bar"><div class="form-title-bar"><i class="fa-solid fa-layer-group"></i><span>استمارة توثيق نشاطات المديرية</span></div><div class="required-note"><span>* تشير إلى أن الحقل مطلوب</span></div></div>
+            </header>
+            <main class="form-panel">
+                <form id="tj_activityForm" action="https://script.google.com/macros/s/AKfycbyQnmHqnJzQ77AHrzhfxADYT93lRDBJm6U1lWasmvnzHb3N9CM0rE8_QWCUHwUw7gQF/exec" method="POST" target="tj_hidden_iframe" novalidate>
+                    <div class="fields-grid">
+                        <div class="field-box full-span">
+                            <label class="box-label">اسم المؤسسة <span class="req-star">*</span></label>
+                            <div class="custom-dropdown single-dropdown" id="tj_orgDropdown">
+                                <input type="hidden" name="organization" id="tj_organizationInput" required>
+                                <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-solid fa-building-flag field-icon"></i><span class="selected-text placeholder">اختر المؤسسة من القائمة...</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                <div class="dropdown-menu">
+                                    <div class="dropdown-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="ابحث سريعاً عن المؤسسة..." id="tj_orgSearch" autocomplete="off"></div>
+                                    <ul class="dropdown-list" id="tj_orgList">
+                                        <li data-value="الأنشطة المركزية"><i class="fa-solid fa-star"></i> الأنشطة المركزية</li>
+                                        <li data-value="مؤسسة ابن الجواد الثقافية"><i class="fa-solid fa-book-open"></i> مؤسسة ابن الجواد الثقافية</li>
+                                        <li data-value="مؤسسة جهاد البناء"><i class="fa-solid fa-trowel-bricks"></i> مؤسسة جهاد البناء</li>
+                                        <li data-value="مؤسسة التألق الرياضية"><i class="fa-solid fa-futbol"></i> مؤسسة التألق الرياضية</li>
+                                        <li data-value="مؤسسة مداد الطلابية"><i class="fa-solid fa-graduation-cap"></i> مؤسسة مداد الطلابية</li>
+                                        <li data-value="مؤسسة ابناء المهندس"><i class="fa-solid fa-compass-drafting"></i> مؤسسة ابناء المهندس</li>
+                                        <li data-value="فرقة أنشاد أنيس النفوس"><i class="fa-solid fa-microphone-lines"></i> فرقة أنشاد أنيس النفوس</li>
+                                        <li data-value="مؤسسة الحوراء زينب (ع)"><i class="fa-solid fa-hands-holding-child"></i> مؤسسة الحوراء زينب (ع)</li>
+                                        <li data-value="مؤسسة أجيال القائم (عج)"><i class="fa-solid fa-seedling"></i> مؤسسة أجيال القائم (عج)</li>
+                                        <li data-value="المؤسسة الصحية"><i class="fa-solid fa-heart-pulse"></i> المؤسسة الصحية</li>
+                                        <li data-value="جمعية كشافة الأمام الحسين (ع)"><i class="fa-solid fa-campground"></i> جمعية كشافة الأمام الحسين (ع)</li>
+                                        <li data-value="قادة الغد"><i class="fa-solid fa-flag"></i> قادة الغد</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى اختيار اسم المؤسسة</span>
+                        </div>
+                        <div class="field-box"><label class="box-label" for="tj_activitySequence">تسلسل النشاط <span class="opt-tag">اختياري</span></label><div class="input-group"><i class="fa-solid fa-hashtag field-icon"></i><input type="text" id="tj_activitySequence" name="activitySequence" placeholder="رقم التسلسل (إن وجد)"></div></div>
+                        <div class="field-box"><label class="box-label" for="tj_activityTitle">عنوان النشاط <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-pen-clip field-icon"></i><input type="text" id="tj_activityTitle" name="activityTitle" placeholder="أدخل عنوان النشاط" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label" for="tj_activityType">نوع النشاط <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-shapes field-icon"></i><input type="text" id="tj_activityType" name="activityType" placeholder="مثال: ندوة، ورشة، بطولة..." required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label" for="tj_manager">مسؤول النشاط <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-user-check field-icon"></i><input type="text" id="tj_manager" name="manager" placeholder="اسم مسؤول النشاط" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label" for="tj_participantsCount">عدد المشاركين <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-users field-icon"></i><input type="number" id="tj_participantsCount" name="participantsCount" min="0" placeholder="0" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى إدخال عدد المشاركين</span></div>
+                        <div class="field-box"><label class="box-label" for="tj_targetCount">عدد المستهدفين <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-bullseye field-icon"></i><input type="number" id="tj_targetCount" name="targetCount" min="0" placeholder="0" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى إدخال عدد المستهدفين</span></div>
+                        <div class="field-box"><label class="box-label" for="tj_date">التاريخ <span class="req-star">*</span></label><div class="input-group"><i class="fa-regular fa-calendar field-icon"></i><input type="date" id="tj_date" name="date" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى تحديد التاريخ</span></div>
+                        <div class="field-box">
+                            <label class="box-label">اليوم <span class="req-star">*</span></label>
+                            <div class="custom-dropdown single-dropdown" id="tj_dayDropdown">
+                                <input type="hidden" name="day" id="tj_dayInput" required>
+                                <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-regular fa-clock field-icon"></i><span class="selected-text placeholder">اختر اليوم...</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                <div class="dropdown-menu"><ul class="dropdown-list"><li data-value="السبت"><i class="fa-solid fa-calendar-day"></i> السبت</li><li data-value="الأحد"><i class="fa-solid fa-calendar-day"></i> الأحد</li><li data-value="الإثنين"><i class="fa-solid fa-calendar-day"></i> الإثنين</li><li data-value="الثلاثاء"><i class="fa-solid fa-calendar-day"></i> الثلاثاء</li><li data-value="الأربعاء"><i class="fa-solid fa-calendar-day"></i> الأربعاء</li><li data-value="الخميس"><i class="fa-solid fa-calendar-day"></i> الخميس</li><li data-value="الجمعة"><i class="fa-solid fa-calendar-day"></i> الجمعة</li></ul></div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى اختيار اليوم</span>
+                        </div>
+                        <div class="field-box full-span"><label class="box-label" for="tj_location">المكان <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-location-dot field-icon"></i><input type="text" id="tj_location" name="location" placeholder="أدخل مكان إقامة النشاط بالتفصيل" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى ذكر مكان النشاط</span></div>
+                        <div class="field-box full-span" id="tj_participantsFieldBox">
+                            <label class="box-label">اسماء المشاركين <span class="req-star">*</span> <span class="opt-tag">يمكنك الاختيار من الكادر أو الكتابة يدوياً أو كلاهما</span></label>
+                            <input type="hidden" name="participantNames" id="tj_participantNames" required>
+                            <div class="participants-dual-box">
+                                <div class="dual-sub-section">
+                                    <span class="sub-option-title"><i class="fa-solid fa-user-check"></i> الخيار الأول: تحديد المشاركين من الكادر الأساسي (اختيار متعدد)</span>
+                                    <div class="custom-dropdown multi-dropdown" id="tj_staffDropdown">
+                                        <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-solid fa-users-gear field-icon"></i><span class="selected-text placeholder" id="tj_staffSelectedText">اختر أسماء الكادر المشاركين...</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                        <div class="dropdown-menu">
+                                            <div class="dropdown-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="ابحث عن اسم في الكادر..." id="tj_staffSearch" autocomplete="off"><button type="button" class="clear-staff-btn" id="tj_clearStaffBtn" title="إلغاء تحديد الكل">مسح الكل</button></div>
+                                            <ul class="dropdown-list multi-select-list" id="tj_staffList">
+                                                <li data-value="ابا الحسن قصي"><i class="fa-regular fa-square check-icon"></i> ابا الحسن قصي</li><li data-value="احمد احسان"><i class="fa-regular fa-square check-icon"></i> احمد احسان</li><li data-value="حبيب عبد الامير"><i class="fa-regular fa-square check-icon"></i> حبيب عبد الامير</li><li data-value="حسن فاضل"><i class="fa-regular fa-square check-icon"></i> حسن فاضل</li><li data-value="حسين يحيى"><i class="fa-regular fa-square check-icon"></i> حسين يحيى</li><li data-value="حمزة محمد"><i class="fa-regular fa-square check-icon"></i> حمزة محمد</li><li data-value="شبيب عبد الامير"><i class="fa-regular fa-square check-icon"></i> شبيب عبد الامير</li><li data-value="ضياء علاء"><i class="fa-regular fa-square check-icon"></i> ضياء علاء</li><li data-value="ابو كيان"><i class="fa-regular fa-square check-icon"></i> ابو كيان</li><li data-value="علي عبد الحسين"><i class="fa-regular fa-square check-icon"></i> علي عبد الحسين</li><li data-value="علي عبد القادر"><i class="fa-regular fa-square check-icon"></i> علي عبد القادر</li><li data-value="علي محسن"><i class="fa-regular fa-square check-icon"></i> علي محسن</li><li data-value="فرحان فلاح"><i class="fa-regular fa-square check-icon"></i> فرحان فلاح</li><li data-value="كرار ازريع"><i class="fa-regular fa-square check-icon"></i> كرار ازريع</li><li data-value="كرار عبد الحسين"><i class="fa-regular fa-square check-icon"></i> كرار عبد الحسين</li><li data-value="مازن السوداني"><i class="fa-regular fa-square check-icon"></i> مازن السوداني</li><li data-value="محسن علي خميس"><i class="fa-regular fa-square check-icon"></i> محسن علي خميس</li><li data-value="محمد بشير"><i class="fa-regular fa-square check-icon"></i> محمد بشير</li><li data-value="محمد تقي"><i class="fa-regular fa-square check-icon"></i> محمد تقي</li><li data-value="محمد نوري"><i class="fa-regular fa-square check-icon"></i> محمد نوري</li><li data-value="محمد مالك"><i class="fa-regular fa-square check-icon"></i> محمد مالك</li><li data-value="مرتضى عبد النبي"><i class="fa-regular fa-square check-icon"></i> مرتضى عبد النبي</li><li data-value="منتظر حزام"><i class="fa-regular fa-square check-icon"></i> منتظر حزام</li><li data-value="وليد خالد"><i class="fa-regular fa-square check-icon"></i> وليد خالد</li><li data-value="ياسين مهدي"><i class="fa-regular fa-square check-icon"></i> ياسين مهدي</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="selected-tags-container" id="tj_selectedStaffTags"></div>
+                                </div>
+                                <div class="dual-divider"><span>أو / و</span></div>
+                                <div class="dual-sub-section">
+                                    <label class="sub-option-title" for="tj_manualParticipantsInput"><i class="fa-solid fa-pen-to-square"></i> الخيار الثاني: كتابة يدوية (إضافة أسماء يدوياً)</label>
+                                    <div class="input-group textarea-group"><i class="fa-solid fa-users-line field-icon"></i><textarea id="tj_manualParticipantsInput" rows="3" placeholder="اكتب أسماء المشاركين يدوياً هنا..."></textarea></div>
+                                </div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى تحديد أسماء من الكادر أو كتابة أسماء المشاركين يدوياً</span>
+                        </div>
+                    </div>
+                    <input type="hidden" name="deviceInfo" id="tj_deviceInfo">
+                    <input type="hidden" name="ipAddress" id="tj_ipAddress">
+                    <input type="hidden" name="exactLocation" id="tj_exactLocation">
+                    <div class="submit-area"><button type="submit" class="submit-btn" id="tj_submitBtn"><span class="btn-text">إرسال وتوثيق النشاط</span><i class="fa-solid fa-paper-plane"></i></button></div>
+                </form>
+            </main>
+        </div>
+        <div class="modal-overlay" id="tj_statusModal"><div class="modal-box"><div class="modal-icon"><i class="fa-solid fa-check"></i></div><h3 id="tj_modalTitle">تم ارسال الاستمارة بنجاح</h3><button type="button" class="modal-close-btn" id="tj_closeModalBtn">إغلاق النافذة</button></div></div>
+        <div class="modal-overlay" id="tj_locationHelpModal"><div class="modal-box"><div class="modal-icon" style="color: var(--danger); background: #fff1f2; border-color: rgba(225, 29, 72, 0.2);"><i class="fa-solid fa-ban"></i></div><h3 style="color: var(--danger);">حظر أمني</h3><p style="font-size: 16px; color: var(--text-secondary); margin: 15px 0 15px; font-weight: 700; line-height: 1.6;">تم حظرك من استخدام الموقع لأنك رفضت مشاركة الموقع. يرجى السماح بالموقع للمتابعة.</p><div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; text-align: right; margin-bottom: 25px;"><p style="font-size: 14px; font-weight: 800; color: var(--royal-dark); margin-bottom: 10px;"><i class="fa-solid fa-circle-info" style="color: var(--accent);"></i> كيف أسمح للموقع؟</p><ol style="font-size: 13.5px; color: var(--text-secondary); padding-right: 20px; line-height: 1.8; font-weight: 600;"><li>اضغط على علامة القفل (🔒) أو (ⓘ) في شريط عنوان المتصفح بالأعلى.</li><li>ابحث عن كلمة "الموقع" (Location) واختر "السماح" (Allow).</li><li>قم بتحديث الصفحة (Refresh) وحاول الدخول مجدداً.</li></ol></div><button type="button" class="modal-close-btn" id="tj_closeHelpModalBtn">حسناً، فهمت</button></div></div>
+        <iframe name="tj_hidden_iframe" id="tj_hidden_iframe" style="display:none;"></iframe>
+    </div>
+
+    <!-- 2. استمارة أنشطة الكشافة - جمعية كشافة الإمام الحسين (ع) -->
+    <div id="scoutsFormView" class="embedded-form-screen scouts-form-theme hidden">
+        <div class="embedded-back-bar"><button type="button" class="embedded-back-btn" onclick="closeEmbeddedForms()"><i class="fa-solid fa-arrow-right"></i> العودة إلى بوابة الاستمارات</button></div>
+        <div class="gate-wrapper" id="sc_gateScreen">
+            <div class="gate-box">
+                <div class="gate-icon"><i class="fa-solid fa-tent"></i></div>
+                <h2>بوابة الدخول الآمنة</h2>
+                <p class="gate-note">يجب السماح بمشاركة الموقع كـ احتراز أمني اذا لم تسمح لن تتمكن من ارسال استمارتك</p>
+                <button type="button" id="sc_gateLocationBtn" class="gate-btn"><i class="fa-solid fa-location-crosshairs"></i><span class="btn-text">السماح للموقع</span></button>
+            </div>
+        </div>
+        <div class="page-wrapper hidden" id="sc_mainFormScreen">
+            <header class="official-header">
+                <div class="header-content">
+                    <div class="org-titles"><span class="org-badge"><i class="fa-solid fa-shield-check"></i> تم التوثيق الأمني للموقع</span><h1 class="main-org-name">جمعية كشافة الامام الحسين (ع)</h1><h2 class="sub-org-name">مفوضية البصرة</h2></div>
+                    <div class="logo-box"><img src="https://i.ibb.co/qYtH9LFk/logo.png" alt="شعار جمعية كشافة الامام الحسين" class="custom-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/10425/10425313.png'"></div>
+                </div>
+                <div class="header-bar"><div class="form-title-bar"><i class="fa-solid fa-clipboard-list"></i><span>استمارة توثيق انشطة الكشافة</span></div><div class="required-note"><span>* تشير إلى أن السؤال مطلوب</span></div></div>
+            </header>
+            <main class="form-panel">
+                <form id="sc_activityForm" action="https://script.google.com/macros/s/AKfycbw1dRz-TJa_zSuVEfPbQywAy7dVxbSrtvDICA3qP6h7S0GUTs9ppc8qUyD2xtb--stY/exec" method="POST" target="sc_hidden_iframe" novalidate>
+                    <div class="fields-grid">
+                        <div class="field-box full-span">
+                            <label class="box-label">اسم الفرقة <span class="req-star">*</span></label>
+                            <div class="custom-dropdown" id="sc_teamDropdown">
+                                <input type="hidden" name="اسم الفرقة" id="sc_teamInput" required>
+                                <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-solid fa-users-rectangle field-icon"></i><span class="selected-text placeholder">اختر اسم الفرقة من القائمة...</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                <div class="dropdown-menu">
+                                    <div class="dropdown-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="ابحث سريعاً عن الفرقة..." id="sc_teamSearch" autocomplete="off"></div>
+                                    <ul class="dropdown-list" id="sc_teamList">
+                                        <li data-value="الأنشطة المركزية"><i class="fa-solid fa-sitemap"></i> الأنشطة المركزية</li><li data-value="فرقة الرياحين"><i class="fa-solid fa-leaf"></i> فرقة الرياحين</li><li data-value="فرقة الميادين"><i class="fa-solid fa-map-location-dot"></i> فرقة الميادين</li><li data-value="فرقة الأمام الباقر (ع)"><i class="fa-solid fa-user-group"></i> فرقة الأمام الباقر (ع)</li><li data-value="فرقة الأمام الجواد (ع)"><i class="fa-solid fa-user-group"></i> فرقة الأمام الجواد (ع)</li><li data-value="فرقة الأمام الصادق (ع)"><i class="fa-solid fa-user-group"></i> فرقة الأمام الصادق (ع)</li><li data-value="فرقة ولي العصر (عج)"><i class="fa-solid fa-user-group"></i> فرقة ولي العصر (عج)</li><li data-value="فرقة النجوم"><i class="fa-solid fa-star"></i> فرقة النجوم</li><li data-value="فرقة الحجة المنتظر(عج)"><i class="fa-solid fa-user-group"></i> فرقة الحجة المنتظر(عج)</li><li data-value="فرقة سيد علي الخرساني"><i class="fa-solid fa-user-group"></i> فرقة سيد علي الخرساني</li><li data-value="فرقة ألأمام الحسن المجتبى (ع)"><i class="fa-solid fa-user-group"></i> فرقة ألأمام الحسن المجتبى (ع)</li><li data-value="فرقة أبا الفضل (ع)"><i class="fa-solid fa-user-group"></i> فرقة أبا الفضل (ع)</li><li data-value="فرقة الأمام السجاد (ع)"><i class="fa-solid fa-user-group"></i> فرقة الأمام السجاد (ع)</li><li data-value="فرقة الأنشاد الكشفية"><i class="fa-solid fa-microphone"></i> فرقة الأنشاد الكشفية</li><li data-value="فرقة الأمام علي (ع)"><i class="fa-solid fa-user-group"></i> فرقة الأمام علي (ع)</li><li data-value="فرقة الشهيد ابو كرار"><i class="fa-solid fa-user-group"></i> فرقة الشهيد ابو كرار</li><li data-value="فرقة الأنصار"><i class="fa-solid fa-user-group"></i> فرقة الأنصار</li><li data-value="فرقة الأمام الرضا (ع)"><i class="fa-solid fa-user-group"></i> فرقة الأمام الرضا (ع)</li><li data-value="فرقة النوارس"><i class="fa-solid fa-dove"></i> فرقة النوارس</li><li data-value="فرقة أهل البيت (ع)"><i class="fa-solid fa-user-group"></i> فرقة أهل البيت (ع)</li><li data-value="الفريق الكروي"><i class="fa-solid fa-futbol"></i> الفريق الكروي</li><li data-value="فرقة سيد الجنوب"><i class="fa-solid fa-user-group"></i> فرقة سيد الجنوب</li><li data-value="فرقة المختار الثقفي"><i class="fa-solid fa-user-group"></i> فرقة المختار الثقفي</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى اختيار اسم الفرقة</span>
+                        </div>
+                        <div class="field-box">
+                            <label class="box-label">الفئة <span class="req-star">*</span></label>
+                            <div class="custom-dropdown" id="sc_categoryDropdown">
+                                <input type="hidden" name="الفئة" required>
+                                <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-solid fa-layer-group field-icon"></i><span class="selected-text placeholder">اختيار...</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                <div class="dropdown-menu"><ul class="dropdown-list"><li data-value="قادة"><i class="fa-solid fa-user-shield"></i> قادة</li><li data-value="جوالة"><i class="fa-solid fa-person-hiking"></i> جوالة</li><li data-value="كشافة"><i class="fa-solid fa-campground"></i> كشافة</li><li data-value="اشبال"><i class="fa-solid fa-child-reaching"></i> اشبال</li><li data-value="براعم"><i class="fa-solid fa-seedling"></i> براعم</li></ul></div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى اختيار الفئة</span>
+                        </div>
+                        <div class="field-box"><label class="box-label" for="sc_teamLeader">قائد الفرقة <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-user-tie field-icon"></i><input type="text" id="sc_teamLeader" name="قائد الفرقة" placeholder="إجابتك" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label" for="sc_activityId">رقم النشاط</label><div class="input-group"><i class="fa-solid fa-hashtag field-icon"></i><input type="text" id="sc_activityId" name="رقم النشاط" placeholder="إجابتك (إن وجد)"></div></div>
+                        <div class="field-box"><label class="box-label" for="sc_activityTitle">عنوان النشاط <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-pen-clip field-icon"></i><input type="text" id="sc_activityTitle" name="عنوان النشاط" placeholder="إجابتك" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box">
+                            <label class="box-label">نوع النشاط <span class="req-star">*</span></label>
+                            <div class="custom-dropdown" id="sc_activityTypeDropdown">
+                                <input type="hidden" name="نوع النشاط" required>
+                                <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-solid fa-shapes field-icon"></i><span class="selected-text placeholder">اختيار...</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                <div class="dropdown-menu"><ul class="dropdown-list"><li data-value="كشفي"><i class="fa-solid fa-tent"></i> كشفي</li><li data-value="ثقافي"><i class="fa-solid fa-book-open"></i> ثقافي</li><li data-value="ديني"><i class="fa-solid fa-mosque"></i> ديني</li><li data-value="اخلاقي"><i class="fa-solid fa-hands-holding"></i> اخلاقي</li><li data-value="رياضي"><i class="fa-solid fa-futbol"></i> رياضي</li><li data-value="ترفيهي"><i class="fa-solid fa-face-smile"></i> ترفيهي</li><li data-value="ميداني"><i class="fa-solid fa-map-location"></i> ميداني</li><li data-value="عقائدي"><i class="fa-solid fa-scale-balanced"></i> عقائدي</li><li data-value="تربوي"><i class="fa-solid fa-graduation-cap"></i> تربوي</li><li data-value="فني"><i class="fa-solid fa-palette"></i> فني</li><li data-value="اعلامي"><i class="fa-solid fa-camera"></i> اعلامي</li><li data-value="خدمي"><i class="fa-solid fa-handshake-angle"></i> خدمي</li><li data-value="بيئي"><i class="fa-solid fa-tree"></i> بيئي</li><li data-value="صحي"><i class="fa-solid fa-heart-pulse"></i> صحي</li><li data-value="علمي"><i class="fa-solid fa-flask"></i> علمي</li><li data-value="تنظيمي"><i class="fa-solid fa-sitemap"></i> تنظيمي</li><li data-value="اخرى"><i class="fa-solid fa-plus"></i> اخرى</li></ul></div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى اختيار نوع النشاط</span>
+                        </div>
+                        <div class="field-box"><label class="box-label" for="sc_activityLeader">قائد النشاط <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-user-check field-icon"></i><input type="text" id="sc_activityLeader" name="قائد النشاط" placeholder="إجابتك" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label" for="sc_participantsCount">عدد المشاركين <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-users field-icon"></i><input type="number" id="sc_participantsCount" name="عدد المشاركين" min="0" placeholder="إجابتك" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label" for="sc_targetCount">عدد المستهدفين <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-bullseye field-icon"></i><input type="number" id="sc_targetCount" name="عدد المستهدفين" min="0" placeholder="إجابتك" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label" for="sc_date">التاريخ <span class="req-star">*</span></label><div class="input-group"><i class="fa-regular fa-calendar field-icon"></i><input type="date" id="sc_date" name="التاريخ" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى تحديد التاريخ</span></div>
+                        <div class="field-box">
+                            <label class="box-label">اليوم <span class="req-star">*</span></label>
+                            <div class="custom-dropdown" id="sc_dayDropdown">
+                                <input type="hidden" name="اليوم" id="sc_dayInput" required>
+                                <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-regular fa-clock field-icon"></i><span class="selected-text placeholder">اختيار...</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                <div class="dropdown-menu"><ul class="dropdown-list"><li data-value="السبت"><i class="fa-solid fa-calendar-day"></i> السبت</li><li data-value="الأحد"><i class="fa-solid fa-calendar-day"></i> الأحد</li><li data-value="الإثنين"><i class="fa-solid fa-calendar-day"></i> الإثنين</li><li data-value="الثلاثاء"><i class="fa-solid fa-calendar-day"></i> الثلاثاء</li><li data-value="الأربعاء"><i class="fa-solid fa-calendar-day"></i> الأربعاء</li><li data-value="الخميس"><i class="fa-solid fa-calendar-day"></i> الخميس</li><li data-value="الجمعة"><i class="fa-solid fa-calendar-day"></i> الجمعة</li></ul></div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى اختيار اليوم</span>
+                        </div>
+                        <div class="field-box full-span"><label class="box-label" for="sc_location">المكان <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-location-dot field-icon"></i><input type="text" id="sc_location" name="المكان" placeholder="إجابتك" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى ذكر مكان النشاط</span></div>
+                        <div class="field-box full-span"><label class="box-label" for="sc_participantNames">اسماء المشاركين <span class="req-star">*</span></label><div class="input-group textarea-group"><i class="fa-solid fa-users-line field-icon"></i><textarea id="sc_participantNames" name="اسماء المشاركين" rows="4" placeholder="إجابتك..." required></textarea></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى كتابة أسماء المشاركين</span></div>
+                    </div>
+                    <input type="hidden" name="deviceInfo" id="sc_deviceInfo">
+                    <input type="hidden" name="ipAddress" id="sc_ipAddress">
+                    <input type="hidden" name="exactLocation" id="sc_exactLocation">
+                    <div class="submit-area"><button type="submit" class="submit-btn" id="sc_submitBtn"><span class="btn-text">إرسال الاستمارة</span><i class="fa-solid fa-paper-plane"></i></button></div>
+                </form>
+            </main>
+        </div>
+        <div class="modal-overlay" id="sc_statusModal"><div class="modal-box"><div class="modal-icon"><i class="fa-solid fa-check"></i></div><h3 id="sc_modalTitle">تم إرسال الاستمارة بنجاح</h3><button type="button" class="modal-close-btn" id="sc_closeModalBtn">إغلاق</button></div></div>
+        <div class="modal-overlay" id="sc_locationHelpModal"><div class="modal-box"><div class="modal-icon" style="color: var(--danger); background: #fff1f2; border-color: rgba(225, 29, 72, 0.2);"><i class="fa-solid fa-ban"></i></div><h3 style="color: var(--danger);">حظر أمني</h3><p style="font-size: 16.5px; color: var(--text-secondary); margin: 15px 0 10px; font-weight: 700; line-height: 1.6;">تم حظرك من استخدام الموقع. يرجى السماح بالموقع أولاً.</p><div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: right; font-size: 13px; color: #475569; border: 1px solid #e2e8f0; line-height: 1.5;"><i class="fa-solid fa-unlock-keyhole" style="color: var(--accent); margin-left: 5px;"></i> <b>لتغيير رأيك وفك الحظر:</b> اضغط على رمز القفل (🔒) الموجود بجانب الرابط في أعلى المتصفح، واختر "السماح" للموقع، ثم حدّث الصفحة.</div><button type="button" class="modal-close-btn" id="sc_closeHelpModalBtn">حسناً</button></div></div>
+        <iframe name="sc_hidden_iframe" id="sc_hidden_iframe" style="display:none;"></iframe>
+    </div>
+
+    <!-- 3. استمارة قسم التخطيط والبرامج -->
+    <div id="planningFormView" class="embedded-form-screen planning-form-theme hidden">
+        <div class="embedded-back-bar"><button type="button" class="embedded-back-btn" onclick="closeEmbeddedForms()"><i class="fa-solid fa-arrow-right"></i> العودة إلى بوابة الاستمارات</button></div>
+        <div class="gate-wrapper" id="pl_gateScreen">
+            <div class="gate-box">
+                <div class="gate-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h2>بوابة الدخول الآمنة</h2>
+                <p class="gate-note">يجب السماح بمشاركة الموقع كـ احتراز أمني اذا لم تسمح لن تتمكن من ارسال استمارتك</p>
+                <button type="button" id="pl_gateLocationBtn" class="gate-btn"><i class="fa-solid fa-location-crosshairs"></i><span class="btn-text">السماح للموقع</span></button>
+            </div>
+        </div>
+        <div class="page-wrapper hidden" id="pl_mainFormScreen">
+            <header class="official-header">
+                <div class="header-content">
+                    <div class="org-titles"><span class="org-badge"><i class="fa-solid fa-shield-check"></i> تم التوثيق الأمني للموقع</span><h1 class="main-org-name">تجمع شباب الشريعة</h1><h2 class="sub-org-name">مديرية البصرة</h2><h3 class="dept-org-name">قسم التخطيط والبرامج</h3></div>
+                    <div class="logo-box"><img src="https://i.ibb.co/VWRf0rLy/IMG-20260303-004928-368.png" alt="شعار تجمع شباب الشريعة" class="custom-logo"></div>
+                </div>
+                <div class="header-bar"><div class="form-title-bar"><i class="fa-solid fa-clipboard-list"></i><span>استمارة قسم التخطيط والبرامج</span></div><div class="required-note"><span>* تشير إلى أن السؤال مطلوب</span></div></div>
+            </header>
+            <main class="form-panel">
+                <form id="pl_activityForm" action="https://script.google.com/macros/s/AKfycbzZzUhtwAY8goLuaiwWrQz4P63VuhrtdDzzoD9jNCOxzS-XKPZI8IQgYkoXiq13UiExWQ/exec" method="POST" target="pl_hidden_iframe" novalidate>
+                    <div class="fields-grid">
+                        <div class="field-box full-span"><label class="box-label" for="pl_managerName">اسم مدير المؤسسة <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-user-tie field-icon"></i><input type="text" id="pl_managerName" name="managerName" placeholder="إجابتك" required></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box full-span">
+                            <label class="box-label">اسم المؤسسة <span class="req-star">*</span></label>
+                            <div class="custom-dropdown" id="pl_orgDropdown">
+                                <input type="hidden" name="orgName" required>
+                                <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-solid fa-building-flag field-icon"></i><span class="selected-text placeholder">اختيار...</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                <div class="dropdown-menu">
+                                    <div class="dropdown-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="ابحث سريعاً..." id="pl_orgSearch" autocomplete="off"></div>
+                                    <ul class="dropdown-list" id="pl_orgList">
+                                        <li data-value="البرنامج المركزي"><i class="fa-solid fa-star"></i> البرنامج المركزي</li>
+                                        <li data-value="مؤسسة التألق الرياضية"><i class="fa-solid fa-futbol"></i> مؤسسة التألق الرياضية</li>
+                                        <li data-value="مؤسسة جهاد البناء"><i class="fa-solid fa-trowel-bricks"></i> مؤسسة جهاد البناء</li>
+                                        <li data-value="مؤسسة مداد الطلابية"><i class="fa-solid fa-graduation-cap"></i> مؤسسة مداد الطلابية</li>
+                                        <li data-value="مؤسسة ابن الجواد الثقافية"><i class="fa-solid fa-book-open"></i> مؤسسة ابن الجواد الثقافية</li>
+                                        <li data-value="مؤسسة ابناء المهندس"><i class="fa-solid fa-compass-drafting"></i> مؤسسة ابناء المهندس</li>
+                                        <li data-value="فرقة انشاد انيس النفوس"><i class="fa-solid fa-microphone-lines"></i> فرقة انشاد انيس النفوس</li>
+                                        <li data-value="مؤسسة الحوراء زينب(ع)"><i class="fa-solid fa-hands-holding-child"></i> مؤسسة الحوراء زينب(ع)</li>
+                                        <li data-value="مؤسسة اجيال القائم (عج)"><i class="fa-solid fa-seedling"></i> مؤسسة اجيال القائم (عج)</li>
+                                        <li data-value="المؤسسة الصحية"><i class="fa-solid fa-heart-pulse"></i> المؤسسة الصحية</li>
+                                        <li data-value="جمعية كشافة الامام الحسين (ع)"><i class="fa-solid fa-campground"></i> جمعية كشافة الامام الحسين (ع)</li>
+                                        <li data-value="أخرى"><i class="fa-solid fa-plus"></i> أخرى</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى اختيار اسم المؤسسة</span>
+                        </div>
+                        <div class="field-box">
+                            <label class="box-label">شهر <span class="req-star">*</span></label>
+                            <div class="custom-dropdown">
+                                <input type="hidden" name="month" required>
+                                <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-regular fa-calendar-days field-icon"></i><span class="selected-text placeholder">اختيار</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                <div class="dropdown-menu"><ul class="dropdown-list"><li data-value="الأول"><i class="fa-solid fa-calendar-day"></i> الأول</li><li data-value="الثاني"><i class="fa-solid fa-calendar-day"></i> الثاني</li><li data-value="الثالث"><i class="fa-solid fa-calendar-day"></i> الثالث</li><li data-value="الرابع"><i class="fa-solid fa-calendar-day"></i> الرابع</li><li data-value="الخامس"><i class="fa-solid fa-calendar-day"></i> الخامس</li><li data-value="السادس"><i class="fa-solid fa-calendar-day"></i> السادس</li><li data-value="السابع"><i class="fa-solid fa-calendar-day"></i> السابع</li><li data-value="الثامن"><i class="fa-solid fa-calendar-day"></i> الثامن</li><li data-value="التاسع"><i class="fa-solid fa-calendar-day"></i> التاسع</li><li data-value="العاشر"><i class="fa-solid fa-calendar-day"></i> العاشر</li><li data-value="الحادي عشر"><i class="fa-solid fa-calendar-day"></i> الحادي عشر</li><li data-value="الثاني عشر"><i class="fa-solid fa-calendar-day"></i> الثاني عشر</li></ul></div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى اختيار الشهر</span>
+                        </div>
+                        <div class="field-box">
+                            <label class="box-label">سنة <span class="req-star">*</span></label>
+                            <div class="custom-dropdown">
+                                <input type="hidden" name="year" required>
+                                <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-regular fa-calendar field-icon"></i><span class="selected-text placeholder">اختيار</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                <div class="dropdown-menu"><ul class="dropdown-list" style="max-height: 250px; overflow-y: auto;"><li data-value="2025"><i class="fa-solid fa-calendar-check"></i> 2025</li><li data-value="2026"><i class="fa-solid fa-calendar-check"></i> 2026</li><li data-value="2027"><i class="fa-solid fa-calendar-check"></i> 2027</li><li data-value="2028"><i class="fa-solid fa-calendar-check"></i> 2028</li><li data-value="2029"><i class="fa-solid fa-calendar-check"></i> 2029</li><li data-value="2030"><i class="fa-solid fa-calendar-check"></i> 2030</li></ul></div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى اختيار السنة</span>
+                        </div>
+                    </div>
+                    <div id="pl_programsWrapper"></div>
+                    <input type="hidden" name="deviceInfo" id="pl_deviceInfo">
+                    <input type="hidden" name="ipAddress" id="pl_ipAddress">
+                    <input type="hidden" name="exactLocation" id="pl_exactLocation">
+                    <div class="submit-area hidden" id="pl_submitArea"><button type="submit" class="submit-btn" id="pl_submitBtn"><span class="btn-text">إرسال وتوثيق البرامج</span><i class="fa-solid fa-paper-plane"></i></button></div>
+                </form>
+            </main>
+        </div>
+        <div class="modal-overlay" id="pl_statusModal"><div class="modal-box"><div class="modal-icon"><i class="fa-solid fa-check"></i></div><h3 id="pl_modalTitle">تم إرسال الاستمارة بنجاح</h3><button type="button" class="modal-close-btn" id="pl_closeModalBtn">إغلاق النافذة</button></div></div>
+        <div class="modal-overlay" id="pl_locationHelpModal"><div class="modal-box"><div class="modal-icon" style="color: var(--danger); background: #fff1f2; border-color: rgba(225, 29, 72, 0.2);"><i class="fa-solid fa-ban"></i></div><h3 style="color: var(--danger);">حظر أمني</h3><p style="font-size: 16.5px; color: var(--text-secondary); margin: 15px 0 10px; font-weight: 700; line-height: 1.6;">تم حظرك من استخدام الموقع. يرجى السماح بالموقع أولاً.</p><div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: right; font-size: 13px; color: #475569; border: 1px solid #e2e8f0; line-height: 1.5;"><i class="fa-solid fa-unlock-keyhole" style="color: var(--accent); margin-left: 5px;"></i> <b>لتغيير رأيك:</b> اضغط على القفل (🔒) واختر "السماح" للموقع.</div><button type="button" class="modal-close-btn" id="pl_closeHelpModalBtn">حسناً</button></div></div>
+        <iframe name="pl_hidden_iframe" id="pl_hidden_iframe" style="display:none;"></iframe>
+    </div>
+
+    <!-- الصفحات الرسمية والنوافذ المنبثقة -->
+    <div id="socialScreen" class="screen hidden">
+        <div class="view-header panel-card saji-border"><h3 class="primary-title">الصفحات الرسمية</h3><button class="panel-btn mini-btn" onclick="goBackToDashboard()">↩ العودة</button></div>
+        <div class="square-panel-grid mt-20">
+            <button class="panel-card square-btn saji-hover-card" onclick="openSocialModal('tajammu')"><div class="card-icon">🌐</div><div class="card-text-container"><h3>تجمع شباب الشريعة</h3></div></button>
+            <button class="panel-card square-btn saji-hover-card" onclick="openSocialModal('scouts')"><div class="card-icon">⚜</div><div class="card-text-container"><h3>كشافة الإمام الحسين</h3></div></button>
+            <button class="panel-card square-btn saji-hover-card" onclick="openSocialModal('trend')" style="grid-column: 1 / -1;"><div class="card-icon">📱</div><div class="card-text-container"><h3>منصة ترند الإعلامية</h3></div></button>
+        </div>
+    </div>
+
+    <div id="customConfirmModal" class="modal-overlay hidden" style="z-index: 4000;">
+        <div class="panel-card modal-window saji-border text-center" style="height: auto; max-width: 320px;">
+            <div class="modal-lock-icon" style="color: var(--error);">⚠️</div>
+            <h3 class="primary-title">تأكيد الحذف</h3>
+            <p class="mt-10 mb-15" style="color: var(--text-muted); font-size: 0.9rem;">هل أنت متأكد من مسح جميع الدردشات؟ لا يمكن التراجع عن هذا الإجراء.</p>
+            <div class="modal-actions mt-20">
+                <button class="panel-btn full-width" style="border-radius: 8px; font-size: 0.9rem;" onclick="closeCustomConfirm()">إلغاء</button>
+                <button class="panel-btn saji-btn full-width" style="background: var(--error); border: none; border-radius: 8px; color: white; font-size: 0.9rem;" onclick="executeClearChat()">نعم، امسح</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="progressOverlay" class="modal-overlay hidden" style="z-index: 9999; flex-direction: column;">
+        <div class="panel-card saji-border p-15" style="width: 90%; max-width: 350px; text-align: center;">
+            <h3 class="primary-title mb-15" id="progressTitle">جاري التصدير...</h3>
+            <div style="background: rgba(0,0,0,0.1); border-radius: 12px; height: 20px; overflow: hidden; border: 1px solid var(--gold); position: relative;">
+                <div id="progressBarFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8); transition: width 0.4s ease;"></div>
+            </div>
+            <div id="progressText" class="mt-10 gold-text" style="font-size: 0.9rem;">0%</div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">يرجى الانتظار وعدم إغلاق النافذة</p>
+        </div>
+    </div>
+
+    <div id="attendanceDetailModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window saji-border">
+            <h3 id="attendanceModalTitle" class="primary-title text-center mb-15">تفاصيل السجل</h3>
+            <div class="modal-scroll-area" id="attendanceModalTextContent" style="font-family: monospace; white-space: pre-wrap; font-size: 0.9rem;"></div>
+            <div class="mt-15"><a id="attendanceModalPdfBtn" href="#" target="_blank" class="panel-btn saji-btn full-width block-link text-center" style="padding: 10px;">📁 تحميل الملف الرسمي</a></div>
+            <div class="modal-actions mt-10"><button class="panel-btn full-width" style="padding: 10px;" onclick="closeAttendanceDetailModal()">إغلاق</button></div>
+        </div>
+    </div>
+
+    <div id="formTextModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window saji-border">
+            <h3 id="formModalTitle" class="primary-title text-center mb-15">تفاصيل الاستمارة</h3>
+            <div class="modal-scroll-area" id="formModalTextContent" style="font-size: 0.9rem;"></div>
+            <div class="mt-15"><button class="panel-btn saji-btn full-width" style="padding: 10px;" onclick="generateFormPDF()">📄 تحميل PDF</button></div>
+            <div class="modal-actions mt-10"><button class="panel-btn full-width" style="padding: 10px;" onclick="closeFormTextModal()">إغلاق</button></div>
+        </div>
+    </div>
+
+    <div id="formPdfModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window pdf-modal-window saji-border">
+            <h3 class="primary-title text-center mb-15">معاينة للطباعة</h3>
+            <div id="formPdfContentArea" class="modal-scroll-area" style="background: #e0e0e0; display: flex; flex-direction: column; align-items: center; gap: 20px;"></div>
+            <div class="modal-actions mt-15"><button class="panel-btn full-width" onclick="closeFormPdfModal()">رجوع</button><button class="panel-btn saji-btn full-width" onclick="executeFormPdfDownload()">تنزيل النهائي</button></div>
+        </div>
+    </div>
+
+    <div id="pdfPreviewModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window pdf-modal-window saji-border">
+            <h3 class="primary-title text-center mb-15">معاينة الملف الشخصي</h3>
+            <div id="pdfContentArea" class="modal-scroll-area" style="background: #e0e0e0; display: flex; flex-direction: column; align-items: center; gap: 20px;"></div>
+            <div class="modal-actions mt-15"><button class="panel-btn full-width" onclick="closePdfPreview()">إلغاء</button><button class="panel-btn saji-btn full-width" onclick="executePdfDownload()">تنزيل PDF</button></div>
+        </div>
+    </div>
+
+    <div id="directCodeModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window saji-border text-center" style="height: auto; max-width: 350px;">
+            <div class="modal-lock-icon">🔐</div>
+            <h3 class="primary-title">بوابة العضو السري</h3>
+            <p class="mt-10 mb-15" style="color: var(--text-muted); font-size: 0.9rem;">أدخل الرمز السري للوصول لملفك</p>
+            <div class="modal-form"><input type="password" id="directMemberCodeInput" placeholder="الرمز السري" autocomplete="off" class="panel-input" style="padding: 10px;"></div>
+            <p id="directModalCodeError" class="error-msg hidden">⚠️ الرمز غير صحيح!</p>
+            <div class="modal-actions mt-20"><button class="panel-btn full-width" style="padding: 10px;" onclick="closeDirectCodeModal()">إلغاء</button><button class="panel-btn saji-btn full-width" style="padding: 10px;" onclick="submitDirectCode()">دخول</button></div>
+        </div>
+    </div>
+
+    <div id="adminPasswordModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window saji-border text-center" style="height: auto; max-width: 350px;">
+            <div class="modal-lock-icon">💼</div>
+            <h3 class="primary-title">صلاحيات الإدارة</h3>
+            <p class="mt-10 mb-15" style="color: var(--text-muted); font-size: 0.9rem;">الرمز الإداري الموحد</p>
+            <div class="modal-form"><input type="password" id="adminPasswordInput" placeholder="الرمز الإداري" class="panel-input" style="padding: 10px;"></div>
+            <p id="modalAdminError" class="error-msg hidden">⚠️ الرمز غير صحيح!</p>
+            <div class="modal-actions mt-20"><button class="panel-btn full-width" style="padding: 10px;" onclick="closeAdminPasswordModal()">إلغاء</button><button class="panel-btn saji-btn full-width" style="padding: 10px;" onclick="submitAdminPassword()">دخول</button></div>
+        </div>
+    </div>
+
+    <div id="socialLinksModal" class="modal-overlay hidden">
+        <div class="panel-card modal-window saji-border" style="height: auto; max-width: 350px;">
+            <h3 id="socialModalTitle" class="primary-title text-center mb-15">اختر المنصة</h3>
+            <div id="socialLinksContainer" class="names-square-grid mt-10" style="grid-template-columns: 1fr; gap: 10px; margin: 0;"></div>
+            <div class="modal-actions mt-20"><button class="panel-btn full-width" style="padding: 10px;" onclick="closeSocialModal()">إغلاق</button></div>
+        </div>
+    </div>
+
+    <div id="pptDownloadModal" class="modal-overlay hidden" style="z-index: 10000;">
+        <div class="ppt-download-card">
+            <div class="ppt-card-header">
+                <div class="ppt-icon-circle"><i class="fa-solid fa-file-powerpoint"></i></div>
+                <div class="ppt-header-text"><h3 id="pptDownloadTitle">تنزيل العرض التقديمي</h3><span id="pptFileNameBadge" class="ppt-file-badge">موجز_الأنشطة.pptx</span></div>
+            </div>
+            <div class="ppt-status-row"><span id="pptStatusLabel">جاري تجهيز الملف للتحميل...</span><span id="pptPercentBadge" class="ppt-percent-pill">0%</span></div>
+            <div class="ppt-progress-track" style="margin-bottom: 18px;"><div id="pptProgressBarFill" class="ppt-progress-fill"></div></div>
+            <button type="button" class="ppt-cancel-btn" onclick="cancelPptDownload()"><i class="fa-solid fa-ban"></i> إلغاء التحميل</button>
+        </div>
+    </div>
+
+    <iframe name="pptSilentDownloadFrame" id="pptSilentDownloadFrame" style="position:fixed; width:1px; height:1px; bottom:-10px; left:-10px; opacity:0.01; border:0; pointer-events:none;"></iframe>
+
+    <div id="aiChatModal" class="modal-overlay hidden" style="z-index: 3000;">
+        <div class="panel-card modal-window saji-border" style="height: 85vh; max-height: 800px; max-width: 600px; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+            <div class="modal-header" style="padding: 15px; background: var(--panel-bg); border-bottom: 1px solid var(--panel-border-top); display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="primary-title" style="margin: 0; font-size: 1.1rem;">🤖 المساعد الذكي</h3>
+                <div style="display: flex; gap: 8px;">
+                    <button class="pill-action-btn" style="background: rgba(231, 76, 60, 0.1); color: var(--error); border: 1px solid var(--error); padding: 5px 12px; font-size: 0.85rem; border-radius: 8px;" onclick="openCustomConfirm()">🗑️ مسح</button>
+                    <button class="pill-action-btn" style="background: rgba(2, 132, 199, 0.1); color: var(--gold); border: 1px solid var(--gold); padding: 5px 12px; font-size: 0.85rem; border-radius: 8px;" onclick="closeChatModal()">❌ إغلاق</button>
+                </div>
+            </div>
+            <div id="chatMessagesArea" class="modal-scroll-area" style="flex: 1; padding: 15px; display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; margin: 0; border-radius: 0;">
+                <div class="chat-msg ai-msg">
+                    <div class="msg-avatar">🤖</div>
+                    <div class="msg-bubble"><strong class="gold-text">أهلاً وسهلاً بك في مساعد تجمع شباب الشريعة ✨</strong><br><br>يمكنني صياغة التقارير، تحليل البيانات، وكتابة خطط البرامج الإدارية باحترافية.<br><br><em>تفضل، كيف يمكنني مساعدتك اليوم؟</em></div>
+                </div>
+            </div>
+            <div class="chat-input-area" style="padding: 15px; background: var(--panel-bg); border-top: 1px solid var(--panel-border-top); display: flex; gap: 10px; align-items: flex-end;">
+                <textarea id="aiChatInput" placeholder="اكتب طلبك الإداري هنا..." class="panel-input" style="flex: 1; resize: none; height: 45px; padding: 10px; border-radius: 8px; font-size: 0.95rem;" onkeydown="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); sendChatMessage(); }"></textarea>
+                <button class="saji-btn" style="border-radius: 8px; width: 45px; height: 45px; font-size: 1.3rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="sendChatMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ar_AR/sdk.js#xfbml=1&version=v18.0"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.2.0/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <div id="toastNotification" class="toast hidden"></div>
+    
+    <script src="script.js?v=21"></script>
+
+    <!-- التفاعل للدليل التعريفي + التحميل المباشر للبوربوينت + الاستمارات المدمجة -->
+    <script>
+    window.switchSygExplorer = function(paneId, btnEl) {
+        const root = document.getElementById('directorateBriefSection');
+        if (!root) return;
+        root.querySelectorAll('.syg-explorer-pane').forEach(p => p.classList.remove('active'));
+        root.querySelectorAll('.syg-mode-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(paneId)?.classList.add('active');
+        btnEl?.classList.add('active');
+    };
+
+    window.filterSygInstitutions = function(category, chipEl) {
+        const root = document.getElementById('directorateBriefSection');
+        if (!root) return;
+        root.querySelectorAll('.syg-filter-chip').forEach(c => c.classList.remove('active'));
+        chipEl?.classList.add('active');
+        root.querySelectorAll('#sygInstitutionsGrid .syg-inst-card').forEach(card => {
+            card.style.display = (category === 'all' || card.getAttribute('data-cat') === category) ? 'flex' : 'none';
+        });
+    };
+
+    // التحميل الصامت للبوربوينت مع تفريغ الإطار تلقائياً لمنع تكرار تنزيله مع ملفات PDF
+    (function() {
+        const NEW_2024_COMPRESSED_ID = '1gFq4Gaeu-8Fjh-OccRdiLnGJWmDqVb4z';
+        const UPDATED_SUMMARY_CONFIG = {
+            '2023': { fileId: '1xaZNs-LKX1T2EEjxvbUVsvKjECNPlwAK', downloadUrl: 'https://docs.google.com/presentation/d/1xaZNs-LKX1T2EEjxvbUVsvKjECNPlwAK/export/pptx', isDriveFile: false },
+            '2024': { fileId: NEW_2024_COMPRESSED_ID, downloadUrl: `https://drive.usercontent.google.com/download?id=${NEW_2024_COMPRESSED_ID}&export=download&confirm=t`, isDriveFile: true },
+            '2025': { fileId: '1SKjtGXdEzIA-AInkF9qthLALxEfVCWoU', downloadUrl: 'https://docs.google.com/presentation/d/1SKjtGXdEzIA-AInkF9qthLALxEfVCWoU/export/pptx', isDriveFile: false }
+        };
+        window._driveDirectCache = {};
+
+        function decodeProxyText(raw) {
+            if (!raw || typeof raw !== 'string') return '';
+            if (raw.startsWith('data:text/html;base64,')) { try { return atob(raw.split(',')[1]); } catch { return raw; } }
+            return raw;
+        }
+
+        function extractDriveFormParams(htmlStr, fileId) {
+            const clean = decodeProxyText(htmlStr);
+            if (!clean || clean.length < 40) return null;
+            try {
+                const form = new DOMParser().parseFromString(clean, 'text/html').querySelector('#download-form, form[action*="download"]');
+                if (form) {
+                    const action = form.getAttribute('action') || 'https://drive.usercontent.google.com/download';
+                    const params = {}, qs = new URLSearchParams();
+                    form.querySelectorAll('input[name]').forEach(inp => { params[inp.name] = inp.value || ''; qs.append(inp.name, inp.value || ''); });
+                    if (params.uuid || params.confirm) return { action, params, fullUrl: action + '?' + qs.toString() };
+                }
+            } catch {}
+            const uuidMatch = clean.match(/name=["']uuid["']\s+value=["']([^"']+)["']/i) || clean.match(/value=["']([^"']+)["']\s+name=["']uuid["']/i) || clean.match(/[?&]uuid=([a-zA-Z0-9\-_]+)/i);
+            if (uuidMatch && uuidMatch[1]) {
+                const params = { id: fileId, export: 'download', authuser: '0', confirm: 't', uuid: uuidMatch[1] };
+                const atMatch = clean.match(/name=["']at["']\s+value=["']([^"']+)["']/i);
+                if (atMatch && atMatch[1]) params.at = atMatch[1];
+                return { action: 'https://drive.usercontent.google.com/download', params, fullUrl: 'https://drive.usercontent.google.com/download?' + new URLSearchParams(params).toString() };
+            }
+            return null;
+        }
+
+        window.prepareDriveFileDirectLink = async function(fileId) {
+            if (window._driveDirectCache[fileId]) return window._driveDirectCache[fileId];
+            const checkUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=download`;
+            const fetchViaProxy = async (pUrl) => {
+                const r = await fetch(pUrl); if (!r.ok) throw 0;
+                const ct = r.headers.get('content-type') || '';
+                const body = ct.includes('application/json') ? (await r.json()).contents : await r.text();
+                const parsed = extractDriveFormParams(body, fileId);
+                if (!parsed) throw 0;
+                return parsed;
+            };
+            const runners = [
+                fetchViaProxy(`https://api.allorigins.win/get?url=${encodeURIComponent(checkUrl)}`),
+                fetchViaProxy(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(checkUrl)}`),
+                fetchViaProxy(`https://corsproxy.io/?${encodeURIComponent(checkUrl)}`)
+            ];
+            try {
+                const result = typeof Promise.any === 'function' ? await Promise.any(runners) : null;
+                if (result) { window._driveDirectCache[fileId] = result; return result; }
+            } catch {}
+            const defaultDirect = { action: 'https://drive.usercontent.google.com/download', params: { id: fileId, export: 'download', confirm: 't' }, fullUrl: `https://drive.usercontent.google.com/download?id=${fileId}&export=download&confirm=t` };
+            window._driveDirectCache[fileId] = defaultDirect;
+            return defaultDirect;
+        };
+
+        setTimeout(() => window.prepareDriveFileDirectLink(NEW_2024_COMPRESSED_ID), 1000);
+
+        function executeSilentFrameDownload(cfg) {
+            const silentFrame = document.getElementById('pptSilentDownloadFrame');
+            if (cfg.isDriveFile) {
+                const cached = window._driveDirectCache[cfg.fileId];
+                const form = document.createElement('form');
+                form.method = 'GET';
+                form.action = (cached && cached.action) ? cached.action : 'https://drive.usercontent.google.com/download';
+                form.target = 'pptSilentDownloadFrame';
+                form.style.display = 'none';
+                const paramsToUse = (cached && cached.params) ? cached.params : { id: cfg.fileId, export: 'download', confirm: 't' };
+                Object.keys(paramsToUse).forEach(key => {
+                    const inp = document.createElement('input'); inp.type = 'hidden'; inp.name = key; inp.value = paramsToUse[key]; form.appendChild(inp);
+                });
+                document.body.appendChild(form);
+                form.submit();
+                setTimeout(() => form.remove(), 2500);
+            } else if (silentFrame) {
+                silentFrame.src = cfg.downloadUrl;
+            }
+            setTimeout(() => {
+                if (silentFrame) { try { silentFrame.src = 'about:blank'; silentFrame.removeAttribute('src'); } catch {} }
+            }, 4500);
+        }
+
+        window.startPptDirectDownload = function() {
+            const year = window.currentSummaryYear;
+            if (!year || !UPDATED_SUMMARY_CONFIG[year]) return;
+            if (window.pptDownloadController?.timer) clearInterval(window.pptDownloadController.timer);
+            if (window.pptDownloadController?.finishTimer) clearTimeout(window.pptDownloadController.finishTimer);
+            window.pptDownloadController = { isCancelled: false, timer: null, finishTimer: null };
+
+            const cfg = UPDATED_SUMMARY_CONFIG[year];
+            const modal = document.getElementById('pptDownloadModal'), titleEl = document.getElementById('pptDownloadTitle');
+            const badgeEl = document.getElementById('pptFileNameBadge'), statusEl = document.getElementById('pptStatusLabel');
+            const percentEl = document.getElementById('pptPercentBadge'), fillEl = document.getElementById('pptProgressBarFill');
+
+            if (titleEl) titleEl.innerText = 'تنزيل موجز أنشطة ' + year;
+            if (badgeEl) badgeEl.innerText = 'Summary_' + year + '.pptx';
+            if (statusEl) statusEl.innerText = 'جاري الاتصال بالسحابة وتجهيز الملف...';
+            if (percentEl) percentEl.innerText = '0%';
+            if (fillEl) fillEl.style.width = '0%';
+            modal?.classList.remove('hidden');
+
+            if (cfg.isDriveFile && !window._driveDirectCache[cfg.fileId]) {
+                window.prepareDriveFileDirectLink(cfg.fileId).then(() => { if (!window.pptDownloadController.isCancelled) executeSilentFrameDownload(cfg); });
+            } else {
+                executeSilentFrameDownload(cfg);
+            }
+
+            let progress = 0;
+            window.pptDownloadController.timer = setInterval(function() {
+                if (window.pptDownloadController.isCancelled) return;
+                if (progress < 50) { progress += 10; if (statusEl) statusEl.innerText = 'جاري الاتصال بالسحابة وتجهيز الملف...'; }
+                else if (progress < 90) { progress += 8; if (statusEl) statusEl.innerText = 'جاري التحميل المباشر في نفس الصفحة...'; }
+                else { progress = 100; }
+                if (fillEl) fillEl.style.width = progress + '%';
+                if (percentEl) percentEl.innerText = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(window.pptDownloadController.timer);
+                    if (statusEl) statusEl.innerText = 'بدأ تنزيل الملف في المتصفح بنجاح ✅';
+                    window.pptDownloadController.finishTimer = setTimeout(function() {
+                        if (!window.pptDownloadController.isCancelled) {
+                            modal?.classList.add('hidden');
+                            window.showNotification?.('بدأ تنزيل ملف البوربوينت (' + year + ') بنجاح 📥');
+                        }
+                    }, 900);
+                }
+            }, 110);
+        };
+
+        window.cancelPptDownload = function() {
+            if (window.pptDownloadController) {
+                window.pptDownloadController.isCancelled = true;
+                clearInterval(window.pptDownloadController.timer);
+                clearTimeout(window.pptDownloadController.finishTimer);
+            }
+            const silentFrame = document.getElementById('pptSilentDownloadFrame');
+            if (silentFrame) { silentFrame.src = 'about:blank'; silentFrame.removeAttribute('src'); }
+            document.getElementById('pptDownloadModal')?.classList.add('hidden');
+            window.showNotification?.('تم إلغاء تحميل ملف البوربوينت 🚫');
+        };
+    })();
+
+    // تشغيل الاستمارات المدمجة الثلاث
+    (function() {
+        if (window._embeddedFormsInitialized) return;
+        window._embeddedFormsInitialized = true;
+
+        window.openEmbeddedForm = function(formType) {
+            ['activitiesScreen','dashboardScreen','tajammuFormView','scoutsFormView','planningFormView'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+            const map = { tajammu: 'tajammuFormView', scouts: 'scoutsFormView', planning: 'planningFormView' };
+            if (map[formType]) document.getElementById(map[formType])?.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.closeEmbeddedForms = function() {
+            ['tajammuFormView','scoutsFormView','planningFormView'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+            document.getElementById('activitiesScreen')?.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        const origGoBack = window.goBackToDashboard;
+        if (typeof origGoBack === 'function') {
+            window.goBackToDashboard = function() {
+                ['tajammuFormView','scoutsFormView','planningFormView','summaryPresentationScreen','mediaEvalAdminScreen'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+                const slideIframe = document.getElementById('summarySlideIframe');
+                if (slideIframe) slideIframe.src = '';
+                origGoBack();
+            };
+        }
+
+        const origNavigateTo = window.navigateTo;
+        if (typeof origNavigateTo === 'function') {
+            window.navigateTo = function(id) {
+                ['tajammuFormView','scoutsFormView','planningFormView','summaryPresentationScreen','mediaEvalAdminScreen'].forEach(v => document.getElementById(v)?.classList.add('hidden'));
+                origNavigateTo(id);
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const daysArabic = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+            const defaultBtnHTML = '<i class="fa-solid fa-location-crosshairs"></i> <span class="btn-text">السماح للموقع</span>';
+
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.embedded-form-screen .custom-dropdown').forEach(d => {
+                    d.classList.remove('active');
+                    d.closest('.field-box')?.classList.remove('dropdown-open');
+                });
+            });
+
+            // 1. استمارة التجمع
+            (function initTajammuForm() {
+                const container = document.getElementById('tajammuFormView');
+                if (!container) return;
+                if (document.getElementById('tj_deviceInfo')) document.getElementById('tj_deviceInfo').value = navigator.userAgent;
+                if (document.getElementById('tj_ipAddress')) fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => document.getElementById('tj_ipAddress').value = d.ip).catch(()=>{});
+
+                const gateLocationBtn = document.getElementById('tj_gateLocationBtn');
+                gateLocationBtn?.addEventListener('click', () => {
+                    if (!navigator.geolocation) return alert("عذراً، متصفحك لا يدعم ميزة تحديد الموقع.");
+                    gateLocationBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span class="btn-text">جاري التحقق...</span>';
+                    gateLocationBtn.style.pointerEvents = 'none';
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            document.getElementById('tj_exactLocation').value = `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`;
+                            document.getElementById('tj_gateScreen').classList.add('hidden');
+                            document.getElementById('tj_mainFormScreen').classList.remove('hidden');
+                        },
+                        () => { gateLocationBtn.innerHTML = defaultBtnHTML; gateLocationBtn.style.pointerEvents = 'auto'; document.getElementById('tj_locationHelpModal').classList.add('show'); },
+                        { enableHighAccuracy: true, timeout: 15000 }
+                    );
+                });
+                document.getElementById('tj_closeHelpModalBtn')?.addEventListener('click', () => document.getElementById('tj_locationHelpModal').classList.remove('show'));
+
+                const singleDropdowns = container.querySelectorAll('.custom-dropdown.single-dropdown');
+                singleDropdowns.forEach(dropdown => {
+                    const trigger = dropdown.querySelector('.dropdown-trigger'), items = dropdown.querySelectorAll('.dropdown-list li');
+                    trigger.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        container.querySelectorAll('.custom-dropdown').forEach(d => { if (d !== dropdown) d.classList.remove('active'); });
+                        dropdown.classList.toggle('active');
+                        if (dropdown.classList.contains('active') && dropdown.id === 'tj_orgDropdown') setTimeout(() => dropdown.querySelector('#tj_orgSearch')?.focus(), 100);
+                    });
+                    items.forEach(item => item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        dropdown.querySelector('input[type="hidden"]').value = item.getAttribute('data-value');
+                        dropdown.querySelector('.selected-text').textContent = item.getAttribute('data-value');
+                        dropdown.querySelector('.selected-text').classList.remove('placeholder');
+                        items.forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected'); dropdown.classList.remove('active');
+                    }));
+                });
+
+                const staffDropdown = document.getElementById('tj_staffDropdown'), staffItems = container.querySelectorAll('#tj_staffList li');
+                const selectedStaffTags = document.getElementById('tj_selectedStaffTags'), manualInput = document.getElementById('tj_manualParticipantsInput'), participantHidden = document.getElementById('tj_participantNames');
+
+                function syncParticipantNames() {
+                    const selectedStaff = Array.from(staffItems).filter(i => i.classList.contains('selected')).map(i => i.getAttribute('data-value'));
+                    const txt = document.getElementById('tj_staffSelectedText');
+                    if (selectedStaff.length === 0) { txt.textContent = 'اختر أسماء الكادر المشاركين...'; txt.classList.add('placeholder'); }
+                    else { txt.textContent = `تم تحديد (${selectedStaff.length}) من الكادر الأساسي`; txt.classList.remove('placeholder'); }
+                    selectedStaffTags.innerHTML = '';
+                    selectedStaff.forEach(name => {
+                        const tag = document.createElement('span'); tag.className = 'staff-tag';
+                        tag.innerHTML = `${name} <button type="button"><i class="fa-solid fa-xmark"></i></button>`;
+                        tag.querySelector('button').addEventListener('click', () => {
+                            const li = container.querySelector(`#tj_staffList li[data-value="${name}"]`);
+                            if (li) { li.classList.remove('selected'); li.querySelector('.check-icon').className = 'fa-regular fa-square check-icon'; syncParticipantNames(); }
+                        });
+                        selectedStaffTags.appendChild(tag);
+                    });
+                    const combined = [];
+                    if (selectedStaff.length) combined.push(selectedStaff.join('، '));
+                    if (manualInput?.value.trim()) combined.push(manualInput.value.trim());
+                    participantHidden.value = combined.join(' ، ');
+                    if (participantHidden.value.trim()) document.getElementById('tj_participantsFieldBox')?.classList.remove('invalid');
+                }
+
+                staffDropdown?.querySelector('.dropdown-trigger').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    container.querySelectorAll('.custom-dropdown').forEach(d => { if (d !== staffDropdown) d.classList.remove('active'); });
+                    staffDropdown.classList.toggle('active');
+                });
+                staffItems.forEach(item => item.addEventListener('click', (e) => {
+                    e.stopPropagation(); item.classList.toggle('selected');
+                    item.querySelector('.check-icon').className = item.classList.contains('selected') ? 'fa-solid fa-square-check check-icon' : 'fa-regular fa-square check-icon';
+                    syncParticipantNames();
+                }));
+                document.getElementById('tj_clearStaffBtn')?.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    staffItems.forEach(i => { i.classList.remove('selected'); i.querySelector('.check-icon').className = 'fa-regular fa-square check-icon'; });
+                    syncParticipantNames();
+                });
+                manualInput?.addEventListener('input', syncParticipantNames);
+
+                const orgSearch = document.getElementById('tj_orgSearch');
+                orgSearch?.addEventListener('input', e => container.querySelectorAll('#tj_orgList li').forEach(li => li.style.display = li.getAttribute('data-value').includes(e.target.value.trim()) ? 'flex' : 'none'));
+                orgSearch?.addEventListener('click', e => e.stopPropagation());
+                document.getElementById('tj_date')?.addEventListener('change', function() { if (this.value) document.getElementById('tj_dayDropdown').querySelector(`li[data-value="${daysArabic[new Date(this.value).getDay()]}"]`)?.click(); });
+                container.querySelectorAll('input, textarea').forEach(inp => inp.addEventListener('input', () => inp.closest('.field-box')?.classList.remove('invalid')));
+
+                const form = document.getElementById('tj_activityForm'), submitBtn = document.getElementById('tj_submitBtn');
+                let isSubmitted = false;
+                form.addEventListener('submit', function(e) {
+                    syncParticipantNames();
+                    let isValid = true;
+                    form.querySelectorAll('[required]').forEach(inp => { if (!inp.value.trim()) { isValid = false; inp.closest('.field-box')?.classList.add('invalid'); } });
+                    if (!isValid) { e.preventDefault(); form.querySelector('.field-box.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+                    isSubmitted = true; submitBtn.querySelector('.btn-text').textContent = 'جاري التوثيق والإرسال...'; submitBtn.disabled = true;
+                });
+                document.getElementById('tj_hidden_iframe')?.addEventListener('load', function() {
+                    if (!isSubmitted) return;
+                    document.getElementById('tj_statusModal').classList.add('show'); form.reset();
+                    if (orgSearch) { orgSearch.value = ''; container.querySelectorAll('#tj_orgList li').forEach(li => li.style.display = 'flex'); }
+                    singleDropdowns.forEach(d => { d.querySelector('input[type="hidden"]').value = ''; const txt = d.querySelector('.selected-text'); txt.textContent = d.id === 'tj_orgDropdown' ? 'اختر المؤسسة من القائمة...' : 'اختر اليوم...'; txt.classList.add('placeholder'); d.querySelectorAll('li').forEach(li => li.classList.remove('selected')); });
+                    document.getElementById('tj_clearStaffBtn')?.click(); if (manualInput) manualInput.value = ''; syncParticipantNames();
+                    submitBtn.querySelector('.btn-text').textContent = 'إرسال وتوثيق النشاط'; submitBtn.disabled = false; isSubmitted = false;
+                    document.getElementById('tj_gateScreen').classList.remove('hidden'); document.getElementById('tj_mainFormScreen').classList.add('hidden');
+                    if (gateLocationBtn) { gateLocationBtn.innerHTML = defaultBtnHTML; gateLocationBtn.style.pointerEvents = 'auto'; }
+                });
+                document.getElementById('tj_closeModalBtn')?.addEventListener('click', () => document.getElementById('tj_statusModal').classList.remove('show'));
+            })();
+
+            // 2. استمارة الكشافة
+            (function initScoutsForm() {
+                const container = document.getElementById('scoutsFormView');
+                if (!container) return;
+                if (document.getElementById('sc_deviceInfo')) document.getElementById('sc_deviceInfo').value = navigator.userAgent;
+                if (document.getElementById('sc_ipAddress')) fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => document.getElementById('sc_ipAddress').value = d.ip).catch(()=>{});
+
+                const gateLocationBtn = document.getElementById('sc_gateLocationBtn');
+                gateLocationBtn?.addEventListener('click', () => {
+                    if (!navigator.geolocation) return alert("متصفحك لا يدعم الموقع.");
+                    gateLocationBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span class="btn-text">جاري التحقق...</span>';
+                    gateLocationBtn.style.pointerEvents = 'none';
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            document.getElementById('sc_exactLocation').value = `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`;
+                            document.getElementById('sc_gateScreen').classList.add('hidden');
+                            document.getElementById('sc_mainFormScreen').classList.remove('hidden');
+                        },
+                        () => { gateLocationBtn.innerHTML = defaultBtnHTML; gateLocationBtn.style.pointerEvents = 'auto'; document.getElementById('sc_locationHelpModal').classList.add('show'); },
+                        { enableHighAccuracy: true, timeout: 15000 }
+                    );
+                });
+                document.getElementById('sc_closeHelpModalBtn')?.addEventListener('click', () => document.getElementById('sc_locationHelpModal').classList.remove('show'));
+
+                const dropdowns = container.querySelectorAll('.custom-dropdown');
+                dropdowns.forEach(dropdown => {
+                    const trigger = dropdown.querySelector('.dropdown-trigger'), items = dropdown.querySelectorAll('.dropdown-list li');
+                    trigger.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        dropdowns.forEach(d => { if (d !== dropdown) d.classList.remove('active'); });
+                        dropdown.classList.toggle('active');
+                        if (dropdown.classList.contains('active') && dropdown.id === 'sc_teamDropdown') setTimeout(() => dropdown.querySelector('#sc_teamSearch')?.focus(), 100);
+                    });
+                    items.forEach(item => item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        dropdown.querySelector('input[type="hidden"]').value = item.getAttribute('data-value');
+                        dropdown.querySelector('.selected-text').textContent = item.getAttribute('data-value');
+                        dropdown.querySelector('.selected-text').classList.remove('placeholder');
+                        items.forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected'); dropdown.classList.remove('active');
+                        dropdown.closest('.field-box')?.classList.remove('invalid');
+                    }));
+                });
+
+                const teamSearch = document.getElementById('sc_teamSearch');
+                teamSearch?.addEventListener('input', e => container.querySelectorAll('#sc_teamList li').forEach(li => li.style.display = li.getAttribute('data-value').includes(e.target.value.trim()) ? 'flex' : 'none'));
+                teamSearch?.addEventListener('click', e => e.stopPropagation());
+                document.getElementById('sc_date')?.addEventListener('change', function() { if (this.value) document.getElementById('sc_dayDropdown').querySelector(`li[data-value="${daysArabic[new Date(this.value).getDay()]}"]`)?.click(); });
+                container.querySelectorAll('input, textarea').forEach(inp => inp.addEventListener('input', () => inp.closest('.field-box')?.classList.remove('invalid')));
+
+                const form = document.getElementById('sc_activityForm'), submitBtn = document.getElementById('sc_submitBtn');
+                let isSubmitted = false;
+                form.addEventListener('submit', function(e) {
+                    let isValid = true;
+                    form.querySelectorAll('[required]').forEach(inp => { if (!inp.value.trim()) { isValid = false; inp.closest('.field-box')?.classList.add('invalid'); } });
+                    if (!isValid) { e.preventDefault(); form.querySelector('.field-box.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+                    isSubmitted = true; submitBtn.querySelector('.btn-text').textContent = 'جاري الإرسال...'; submitBtn.disabled = true;
+                });
+                document.getElementById('sc_hidden_iframe')?.addEventListener('load', function() {
+                    if (!isSubmitted) return;
+                    document.getElementById('sc_statusModal').classList.add('show'); form.reset();
+                    if (teamSearch) { teamSearch.value = ''; container.querySelectorAll('#sc_teamList li').forEach(li => li.style.display = 'flex'); }
+                    dropdowns.forEach(d => { d.querySelector('input[type="hidden"]').value = ''; const txt = d.querySelector('.selected-text'); txt.textContent = d.id === 'sc_teamDropdown' ? 'اختر اسم الفرقة من القائمة...' : 'اختيار...'; txt.classList.add('placeholder'); d.querySelectorAll('li').forEach(li => li.classList.remove('selected')); });
+                    submitBtn.querySelector('.btn-text').textContent = 'إرسال الاستمارة'; submitBtn.disabled = false; isSubmitted = false;
+                    document.getElementById('sc_gateScreen').classList.remove('hidden'); document.getElementById('sc_mainFormScreen').classList.add('hidden');
+                    if (gateLocationBtn) { gateLocationBtn.innerHTML = defaultBtnHTML; gateLocationBtn.style.pointerEvents = 'auto'; }
+                });
+                document.getElementById('sc_closeModalBtn')?.addEventListener('click', () => document.getElementById('sc_statusModal').classList.remove('show'));
+            })();
+
+            // 3. استمارة التخطيط والبرامج
+            (function initPlanningForm() {
+                const container = document.getElementById('planningFormView');
+                if (!container) return;
+                const programsWrapper = document.getElementById('pl_programsWrapper'), submitArea = document.getElementById('pl_submitArea');
+                const arabicOrdinals = ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس", "السابع", "الثامن", "التاسع", "العاشر"];
+
+                for (let i = 1; i <= 10; i++) {
+                    const isFirst = (i === 1), isLast = (i === 10), reqAttr = isFirst ? 'required' : '';
+                    const block = document.createElement('div');
+                    block.className = `fields-grid program-block ${isFirst ? '' : 'hidden'}`;
+                    block.id = `pl_programBlock_${i}`;
+                    const addMoreHTML = isLast ? '' : `
+                        <div class="field-box full-span">
+                            <label class="box-label">هل تريد اضافة برنامج اخر ؟ <span class="req-star">*</span></label>
+                            <div class="custom-dropdown pl-add-more" data-index="${i}">
+                                <input type="hidden" class="prog-input" ${reqAttr}>
+                                <div class="dropdown-trigger" tabindex="0"><div class="trigger-right"><i class="fa-solid fa-circle-plus field-icon"></i><span class="selected-text placeholder">اختيار...</span></div><i class="fa-solid fa-angle-down arrow-icon"></i></div>
+                                <div class="dropdown-menu"><ul class="dropdown-list"><li data-value="نعم"><i class="fa-solid fa-check"></i> نعم (إضافة البرنامج ${arabicOrdinals[i]})</li><li data-value="لا"><i class="fa-solid fa-paper-plane"></i> لا (اكتفيت، أظهر زر الإرسال)</li></ul></div>
+                            </div>
+                            <span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى تحديد خيار الإضافة</span>
+                        </div>`;
+                    block.innerHTML = `
+                        <div class="program-banner" style="grid-column: span 2; background: linear-gradient(135deg, var(--royal-dark) 0%, var(--royal-emerald) 100%); color: #ffffff; padding: 15px 24px; border-radius: 16px; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(18, 53, 36, 0.15); border-right: 5px solid var(--gold-primary); margin-top: 38px;"><i class="fa-solid fa-clipboard-check" style="color: var(--gold-primary); font-size: 20px;"></i><span>تفاصيل البرنامج ${arabicOrdinals[i - 1]}</span></div>
+                        <div class="field-box full-span"><label class="box-label">اسم البرنامج <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-pen-clip field-icon"></i><input type="text" name="progName_${i}" class="prog-input" placeholder="إجابتك" ${reqAttr}></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label">نوعه <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-shapes field-icon"></i><input type="text" name="progType_${i}" class="prog-input" placeholder="إجابتك" ${reqAttr}></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label">تكلفته <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-coins field-icon"></i><input type="text" name="progCost_${i}" class="prog-input" placeholder="إجابتك" ${reqAttr}></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box full-span"><label class="box-label">فقراته <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-list-check field-icon"></i><input type="text" name="progItems_${i}" class="prog-input" placeholder="إجابتك" ${reqAttr}></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label">عدد المستهدفين <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-bullseye field-icon"></i><input type="number" name="progTargets_${i}" class="prog-input" min="0" placeholder="0" ${reqAttr}></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label">عدد المشاركين <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-users field-icon"></i><input type="number" name="progParticipants_${i}" class="prog-input" min="0" placeholder="0" ${reqAttr}></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box full-span"><label class="box-label">تفاصيل البرنامج <span class="req-star">*</span></label><div class="input-group textarea-group"><i class="fa-solid fa-align-right field-icon" style="padding-top:16px;"></i><textarea name="progDetails_${i}" class="prog-input" rows="3" placeholder="إجابتك..." ${reqAttr}></textarea></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        <div class="field-box"><label class="box-label">تاريخ البرنامج <span class="req-star">*</span></label><div class="input-group"><i class="fa-regular fa-calendar field-icon"></i><input type="date" name="progDate_${i}" class="prog-input" ${reqAttr}></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> يرجى تحديد التاريخ</span></div>
+                        <div class="field-box"><label class="box-label">المكان <span class="req-star">*</span></label><div class="input-group"><i class="fa-solid fa-location-dot field-icon"></i><input type="text" name="progLocation_${i}" class="prog-input" placeholder="إجابتك" ${reqAttr}></div><span class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> هذا الحقل مطلوب</span></div>
+                        ${addMoreHTML}`;
+                    programsWrapper.appendChild(block);
+                }
+
+                function handleProgramFlow(index, choice) {
+                    if (choice === 'نعم') {
+                        const nextBlock = document.getElementById(`pl_programBlock_${index + 1}`);
+                        if (nextBlock) {
+                            nextBlock.classList.remove('hidden');
+                            nextBlock.querySelectorAll('.prog-input').forEach(inp => inp.required = true);
+                            if (index + 1 === 10) submitArea.classList.remove('hidden');
+                            else { const nc = nextBlock.querySelector('.pl-add-more input[type="hidden"]'); if (!nc || !nc.value) submitArea.classList.add('hidden'); }
+                            setTimeout(() => nextBlock.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+                        }
+                    } else if (choice === 'لا') {
+                        for (let k = index + 1; k <= 10; k++) {
+                            const blk = document.getElementById(`pl_programBlock_${k}`);
+                            if (blk) {
+                                blk.classList.add('hidden');
+                                blk.querySelectorAll('.prog-input').forEach(inp => { inp.required = false; inp.value = ''; });
+                                blk.querySelectorAll('.field-box.invalid').forEach(b => b.classList.remove('invalid'));
+                                const dd = blk.querySelector('.custom-dropdown');
+                                if (dd) { const txt = dd.querySelector('.selected-text'); if (txt) { txt.textContent = 'اختيار...'; txt.classList.add('placeholder'); } dd.querySelectorAll('li').forEach(li => li.classList.remove('selected')); }
+                            }
+                        }
+                        submitArea.classList.remove('hidden');
+                        setTimeout(() => submitArea.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
+                    }
+                }
+
+                if (document.getElementById('pl_deviceInfo')) document.getElementById('pl_deviceInfo').value = navigator.userAgent;
+                if (document.getElementById('pl_ipAddress')) fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => document.getElementById('pl_ipAddress').value = d.ip).catch(() => {});
+
+                const gateBtn = document.getElementById('pl_gateLocationBtn');
+                gateBtn?.addEventListener('click', () => {
+                    if (!navigator.geolocation) return alert("متصفحك لا يدعم الموقع.");
+                    gateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span class="btn-text">جاري التحقق...</span>';
+                    gateBtn.style.pointerEvents = 'none';
+                    let fallbackTimeout = setTimeout(() => { gateBtn.innerHTML = defaultBtnHTML; gateBtn.style.pointerEvents = 'auto'; document.getElementById('pl_locationHelpModal').classList.add('show'); }, 5000);
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            clearTimeout(fallbackTimeout);
+                            document.getElementById('pl_exactLocation').value = `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`;
+                            document.getElementById('pl_gateScreen').classList.add('hidden');
+                            document.getElementById('pl_mainFormScreen').classList.remove('hidden');
+                        },
+                        () => { clearTimeout(fallbackTimeout); gateBtn.innerHTML = defaultBtnHTML; gateBtn.style.pointerEvents = 'auto'; document.getElementById('pl_locationHelpModal').classList.add('show'); },
+                        { enableHighAccuracy: false, maximumAge: 0, timeout: 4500 }
+                    );
+                });
+                document.getElementById('pl_closeHelpModalBtn')?.addEventListener('click', () => document.getElementById('pl_locationHelpModal').classList.remove('show'));
+
+                const dropdowns = container.querySelectorAll('.custom-dropdown');
+                dropdowns.forEach(dropdown => {
+                    const trigger = dropdown.querySelector('.dropdown-trigger'), items = dropdown.querySelectorAll('.dropdown-list li');
+                    trigger.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        dropdowns.forEach(d => { if (d !== dropdown) d.classList.remove('active'); d.closest('.field-box')?.classList.remove('dropdown-open'); });
+                        dropdown.classList.toggle('active'); dropdown.closest('.field-box')?.classList.toggle('dropdown-open');
+                        if (dropdown.classList.contains('active') && dropdown.id === 'pl_orgDropdown') setTimeout(() => dropdown.querySelector('#pl_orgSearch')?.focus(), 100);
+                    });
+                    items.forEach(item => item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        dropdown.querySelector('input[type="hidden"]').value = item.getAttribute('data-value');
+                        dropdown.querySelector('.selected-text').textContent = item.textContent.trim();
+                        dropdown.querySelector('.selected-text').classList.remove('placeholder');
+                        items.forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected'); dropdown.classList.remove('active'); dropdown.closest('.field-box')?.classList.remove('dropdown-open', 'invalid');
+                        if (dropdown.classList.contains('pl-add-more')) handleProgramFlow(parseInt(dropdown.getAttribute('data-index'), 10), item.getAttribute('data-value'));
+                    }));
+                });
+
+                const searchInp = document.getElementById('pl_orgSearch');
+                searchInp?.addEventListener('input', e => container.querySelectorAll('#pl_orgList li').forEach(li => li.style.display = li.getAttribute('data-value').includes(e.target.value.trim()) ? 'flex' : 'none'));
+                searchInp?.addEventListener('click', e => e.stopPropagation());
+                container.querySelectorAll('input, textarea').forEach(inp => inp.addEventListener('input', () => inp.closest('.field-box')?.classList.remove('invalid')));
+
+                const form = document.getElementById('pl_activityForm'), submitBtn = document.getElementById('pl_submitBtn');
+                let isSubmitted = false;
+                form.addEventListener('submit', function(e) {
+                    let isValid = true;
+                    Array.from(form.querySelectorAll('[required]')).filter(inp => inp.closest('.hidden') === null).forEach(inp => { if (!inp.value.trim()) { isValid = false; inp.closest('.field-box')?.classList.add('invalid'); } });
+                    if (!isValid) { e.preventDefault(); form.querySelector('.field-box.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+                    isSubmitted = true; submitBtn.querySelector('.btn-text').textContent = 'جاري التوثيق والإرسال...'; submitBtn.disabled = true;
+                });
+                document.getElementById('pl_hidden_iframe')?.addEventListener('load', function() {
+                    if (!isSubmitted) return;
+                    document.getElementById('pl_statusModal').classList.add('show'); form.reset();
+                    if (searchInp) { searchInp.value = ''; container.querySelectorAll('#pl_orgList li').forEach(item => item.style.display = 'flex'); }
+                    dropdowns.forEach(d => { const h = d.querySelector('input[type="hidden"]'); if (h) h.value = ''; const txt = d.querySelector('.selected-text'); if (txt) { txt.textContent = d.classList.contains('pl-add-more') ? 'اختيار...' : 'اختيار'; txt.classList.add('placeholder'); } d.querySelectorAll('li').forEach(li => li.classList.remove('selected')); });
+                    for (let k = 2; k <= 10; k++) document.getElementById(`pl_programBlock_${k}`)?.classList.add('hidden');
+                    submitArea.classList.add('hidden'); submitBtn.querySelector('.btn-text').textContent = 'إرسال وتوثيق البرامج'; submitBtn.disabled = false; isSubmitted = false;
+                    document.getElementById('pl_gateScreen').classList.remove('hidden'); document.getElementById('pl_mainFormScreen').classList.add('hidden');
+                    if (gateBtn) { gateBtn.innerHTML = defaultBtnHTML; gateBtn.style.pointerEvents = 'auto'; }
+                });
+                document.getElementById('pl_closeModalBtn')?.addEventListener('click', () => document.getElementById('pl_statusModal').classList.remove('show'));
+            })();
+        });
+    })();
+    </script>
+</body>
+</html>
